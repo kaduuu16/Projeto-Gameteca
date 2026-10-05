@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Detalhes de um jogo da coleção da Minha Gameteca.">
+  <title>Detalhes do jogo — Minha Gameteca</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+  <a href="#conteudo">Ir para o conteúdo principal</a>
+
+  <header>
+    <img src="../assets/img/logo.svg" alt="Logotipo da Minha Gameteca" width="48" height="48">
+    <div>
+      <h1>Minha Gameteca</h1>
+      <p>Organize os jogos que você tem, está jogando, já zerou ou quer jogar.</p>
+    </div>
+    <nav aria-label="Navegação principal">
+      <ul>
+        <li><a href="../index.html">Minha coleção</a></li>
+        <li><a href="cadastro.html">Cadastrar jogo</a></li>
+        <li><a href="../index.html#resumo">Resumo</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="conteudo">
+    <nav aria-label="Trilha de navegação">
+      <ol>
+        <li><a href="../index.html">Minha coleção</a></li>
+        <li aria-current="page">Detalhes do jogo</li>
+      </ol>
+    </nav>
+
+    <article aria-labelledby="detalhe-titulo">
+      <header>
+        <h2 id="detalhe-titulo">The Witcher 3: Wild Hunt</h2>
+        <p>RPG · PC · 2015</p>
+      </header>
+
+      <figure>
+        <img src="../assets/img/capa-padrao.svg"
+             alt="Capa provisória do jogo The Witcher 3: Wild Hunt"
+             width="225" height="300">
+        <figcaption>Capa provisória. A capa real virá da URL cadastrada ou da API RAWG.</figcaption>
+      </figure>
+
+      <section aria-labelledby="detalhe-dados">
+        <h3 id="detalhe-dados">Dados na coleção</h3>
+        <dl>
+          <dt>Plataforma</dt>
+          <dd>PC</dd>
+          <dt>Gênero</dt>
+          <dd>RPG</dd>
+          <dt>Ano de lançamento</dt>
+          <dd>2015</dd>
+          <dt>Status</dt>
+          <dd>Zerado</dd>
+          <dt>Nota pessoal</dt>
+          <dd>10 / 10</dd>
+          <dt>Horas jogadas</dt>
+          <dd>120 h</dd>
+        </dl>
+      </section>
+
+      <section aria-labelledby="detalhe-observacoes">
+        <h3 id="detalhe-observacoes">Observações</h3>
+        <p>
+          Joguei todas as missões principais e as duas expansões.
+          Quero rejogar com outro final.
+        </p>
+      </section>
+
+      <section aria-labelledby="detalhe-api">
+        <h3 id="detalhe-api">Informações da RAWG (exemplo)</h3>
+        <p>Nesta área serão exibidos dados complementares obtidos da API na Etapa 3.</p>
+        <ul>
+          <li>Desenvolvedora: CD Projekt Red</li>
+          <li>Data de lançamento: 19/05/2015</li>
+        </ul>
+      </section>
+
+      <footer>
+        <p>
+          <a href="../index.html">Voltar para a coleção</a>
+          <a href="editar.html">Editar jogo</a>
+          <button type="button">Excluir jogo</button>
+        </p>
+      </footer>
+    </article>
+
+    <!-- Confirmação de exclusão: ficará oculta até ser aberta com JavaScript (Etapa 3). -->
+    <dialog id="dialogo-exclusao" aria-labelledby="dialogo-titulo">
+      <form method="dialog">
+        <h2 id="dialogo-titulo">Excluir jogo?</h2>
+        <p>
+          Tem certeza de que deseja excluir <strong>The Witcher 3: Wild Hunt</strong>
+          da sua coleção? Esta ação não poderá ser desfeita.
+        </p>
+        <button value="cancelar">Cancelar</button>
+        <button value="confirmar">Sim, excluir</button>
+      </form>
+    </dialog>
+  </main>
+
+  <footer>
+    <p>Minha Gameteca — Trabalho Prático Individual de Desenvolvimento Web (Etapa 1).</p>
+    <p>
+      Dados de jogos previstos via
+      <a href="https://rawg.io/apidocs" target="_blank" rel="noopener noreferrer">RAWG Video Games Database API</a>.
+    </p>
+  </footer>
+</body>
+</html>
