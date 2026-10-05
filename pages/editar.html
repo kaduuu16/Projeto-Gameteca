@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Edite os dados de um jogo da sua coleção na Minha Gameteca.">
+  <title>Editar jogo — Minha Gameteca</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+  <a href="#conteudo">Ir para o conteúdo principal</a>
+
+  <header>
+    <img src="../assets/img/logo.svg" alt="Logotipo da Minha Gameteca" width="48" height="48">
+    <div>
+      <h1>Minha Gameteca</h1>
+      <p>Organize os jogos que você tem, está jogando, já zerou ou quer jogar.</p>
+    </div>
+    <nav aria-label="Navegação principal">
+      <ul>
+        <li><a href="../index.html">Minha coleção</a></li>
+        <li><a href="cadastro.html">Cadastrar jogo</a></li>
+        <li><a href="../index.html#resumo">Resumo</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="conteudo">
+    <nav aria-label="Trilha de navegação">
+      <ol>
+        <li><a href="../index.html">Minha coleção</a></li>
+        <li><a href="detalhes.html">Detalhes do jogo</a></li>
+        <li aria-current="page">Editar jogo</li>
+      </ol>
+    </nav>
+
+    <section aria-labelledby="titulo-editar">
+      <h2 id="titulo-editar">Editar jogo</h2>
+      <p>
+        Formulário já preenchido com os dados de exemplo de
+        <strong>The Witcher 3: Wild Hunt</strong>. Na Etapa 3, ele será carregado
+        a partir do jogo selecionado.
+      </p>
+
+      <form id="form-editar-jogo" action="#" method="post">
+        <input type="hidden" id="editar-id" name="id" value="1">
+
+        <fieldset>
+          <legend>Identificação</legend>
+
+          <div>
+            <label for="editar-titulo">Título <abbr title="obrigatório">*</abbr></label>
+            <input type="text" id="editar-titulo" name="titulo" maxlength="120" required
+                   value="The Witcher 3: Wild Hunt">
+          </div>
+
+          <div>
+            <label for="editar-plataforma">Plataforma <abbr title="obrigatório">*</abbr></label>
+            <select id="editar-plataforma" name="plataforma" required>
+              <option value="" disabled>Selecione</option>
+              <option value="pc" selected>PC</option>
+              <option value="playstation-5">PlayStation 5</option>
+              <option value="playstation-4">PlayStation 4</option>
+              <option value="xbox-series">Xbox Series X|S</option>
+              <option value="nintendo-switch">Nintendo Switch</option>
+              <option value="mobile">Mobile</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="editar-genero">Gênero <abbr title="obrigatório">*</abbr></label>
+            <select id="editar-genero" name="genero" required>
+              <option value="" disabled>Selecione</option>
+              <option value="acao">Ação</option>
+              <option value="aventura">Aventura</option>
+              <option value="rpg" selected>RPG</option>
+              <option value="plataforma">Plataforma</option>
+              <option value="estrategia">Estratégia</option>
+              <option value="esporte">Esporte</option>
+              <option value="corrida">Corrida</option>
+              <option value="simulacao">Simulação</option>
+              <option value="outro">Outro</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="editar-ano">Ano de lançamento <abbr title="obrigatório">*</abbr></label>
+            <input type="number" id="editar-ano" name="ano" min="1970" max="2100" step="1" required
+                   value="2015">
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Situação na coleção</legend>
+
+          <fieldset>
+            <legend>Status <abbr title="obrigatório">*</abbr></legend>
+            <div>
+              <input type="radio" id="editar-status-quero-jogar" name="status" value="quero-jogar" required>
+              <label for="editar-status-quero-jogar">Quero jogar</label>
+            </div>
+            <div>
+              <input type="radio" id="editar-status-jogando" name="status" value="jogando">
+              <label for="editar-status-jogando">Jogando</label>
+            </div>
+            <div>
+              <input type="radio" id="editar-status-zerado" name="status" value="zerado" checked>
+              <label for="editar-status-zerado">Zerado</label>
+            </div>
+            <div>
+              <input type="radio" id="editar-status-abandonado" name="status" value="abandonado">
+              <label for="editar-status-abandonado">Abandonado</label>
+            </div>
+          </fieldset>
+
+          <div>
+            <label for="editar-nota">Nota pessoal</label>
+            <input type="number" id="editar-nota" name="nota" min="0" max="10" step="0.5"
+                   aria-describedby="editar-ajuda-nota" value="10">
+            <small id="editar-ajuda-nota">De 0 a 10. Deixe em branco se ainda não jogou.</small>
+          </div>
+
+          <div>
+            <label for="editar-horas">Horas jogadas</label>
+            <input type="number" id="editar-horas" name="horas" min="0" step="0.5" value="120">
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Detalhes adicionais</legend>
+
+          <div>
+            <label for="editar-capa">URL da capa</label>
+            <input type="url" id="editar-capa" name="capa" placeholder="https://exemplo.com/capa.jpg">
+          </div>
+
+          <div>
+            <label for="editar-observacoes">Observações</label>
+            <textarea id="editar-observacoes" name="observacoes" rows="4" maxlength="500">Joguei todas as missões principais e as duas expansões. Quero rejogar com outro final.</textarea>
+          </div>
+        </fieldset>
+
+        <div>
+          <button type="submit">Salvar alterações</button>
+          <a href="detalhes.html">Cancelar</a>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>Minha Gameteca — Trabalho Prático Individual de Desenvolvimento Web (Etapa 1).</p>
+    <p>
+      Dados de jogos previstos via
+      <a href="https://rawg.io/apidocs" target="_blank" rel="noopener noreferrer">RAWG Video Games Database API</a>.
+    </p>
+  </footer>
+</body>
+</html>
