@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Cadastre um novo jogo na sua coleção da Minha Gameteca.">
+  <title>Cadastrar jogo — Minha Gameteca</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+  <a href="#conteudo">Ir para o conteúdo principal</a>
+
+  <header>
+    <img src="../assets/img/logo.svg" alt="Logotipo da Minha Gameteca" width="48" height="48">
+    <div>
+      <h1>Minha Gameteca</h1>
+      <p>Organize os jogos que você tem, está jogando, já zerou ou quer jogar.</p>
+    </div>
+    <nav aria-label="Navegação principal">
+      <ul>
+        <li><a href="../index.html">Minha coleção</a></li>
+        <li><a href="cadastro.html" aria-current="page">Cadastrar jogo</a></li>
+        <li><a href="../index.html#resumo">Resumo</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="conteudo">
+    <nav aria-label="Trilha de navegação">
+      <ol>
+        <li><a href="../index.html">Minha coleção</a></li>
+        <li aria-current="page">Cadastrar jogo</li>
+      </ol>
+    </nav>
+
+    <section aria-labelledby="titulo-busca-api">
+      <h2 id="titulo-busca-api">Buscar jogo na RAWG (opcional)</h2>
+      <p>
+        Pesquise pelo nome para preencher automaticamente título, gênero, plataformas,
+        ano e capa. Este recurso será implementado na Etapa 3.
+      </p>
+
+      <form id="form-busca-api" action="#" method="get" role="search" aria-label="Buscar jogo na API RAWG">
+        <div>
+          <label for="busca-api">Nome do jogo</label>
+          <input type="search" id="busca-api" name="busca-api" placeholder="Ex.: Hollow Knight">
+          <button type="submit">Buscar na RAWG</button>
+        </div>
+      </form>
+
+      <h3>Resultados da busca</h3>
+      <p>Exemplo estático de como os resultados serão apresentados:</p>
+      <ul>
+        <li>
+          <strong>Hollow Knight</strong> (2017) — PC, Nintendo Switch
+          <button type="button">Usar estes dados</button>
+        </li>
+        <li>
+          <strong>Hollow Knight: Silksong</strong> — PC, Nintendo Switch
+          <button type="button">Usar estes dados</button>
+        </li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="titulo-form-jogo">
+      <h2 id="titulo-form-jogo">Dados do jogo</h2>
+      <p>Os campos marcados com <abbr title="obrigatório">*</abbr> são obrigatórios.</p>
+
+      <form id="form-jogo" action="#" method="post">
+        <input type="hidden" id="jogo-id" name="id">
+
+        <fieldset>
+          <legend>Identificação</legend>
+
+          <div>
+            <label for="jogo-titulo">Título <abbr title="obrigatório">*</abbr></label>
+            <input type="text" id="jogo-titulo" name="titulo" maxlength="120" required
+                   placeholder="Ex.: The Witcher 3: Wild Hunt">
+          </div>
+
+          <div>
+            <label for="jogo-plataforma">Plataforma <abbr title="obrigatório">*</abbr></label>
+            <select id="jogo-plataforma" name="plataforma" required>
+              <option value="" selected disabled>Selecione</option>
+              <option value="pc">PC</option>
+              <option value="playstation-5">PlayStation 5</option>
+              <option value="playstation-4">PlayStation 4</option>
+              <option value="xbox-series">Xbox Series X|S</option>
+              <option value="nintendo-switch">Nintendo Switch</option>
+              <option value="mobile">Mobile</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="jogo-genero">Gênero <abbr title="obrigatório">*</abbr></label>
+            <select id="jogo-genero" name="genero" required>
+              <option value="" selected disabled>Selecione</option>
+              <option value="acao">Ação</option>
+              <option value="aventura">Aventura</option>
+              <option value="rpg">RPG</option>
+              <option value="plataforma">Plataforma</option>
+              <option value="estrategia">Estratégia</option>
+              <option value="esporte">Esporte</option>
+              <option value="corrida">Corrida</option>
+              <option value="simulacao">Simulação</option>
+              <option value="outro">Outro</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="jogo-ano">Ano de lançamento <abbr title="obrigatório">*</abbr></label>
+            <input type="number" id="jogo-ano" name="ano" min="1970" max="2100" step="1" required
+                   placeholder="Ex.: 2015">
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Situação na coleção</legend>
+
+          <fieldset>
+            <legend>Status <abbr title="obrigatório">*</abbr></legend>
+            <div>
+              <input type="radio" id="status-quero-jogar" name="status" value="quero-jogar" checked required>
+              <label for="status-quero-jogar">Quero jogar</label>
+            </div>
+            <div>
+              <input type="radio" id="status-jogando" name="status" value="jogando">
+              <label for="status-jogando">Jogando</label>
+            </div>
+            <div>
+              <input type="radio" id="status-zerado" name="status" value="zerado">
+              <label for="status-zerado">Zerado</label>
+            </div>
+            <div>
+              <input type="radio" id="status-abandonado" name="status" value="abandonado">
+              <label for="status-abandonado">Abandonado</label>
+            </div>
+          </fieldset>
+
+          <div>
+            <label for="jogo-nota">Nota pessoal</label>
+            <input type="number" id="jogo-nota" name="nota" min="0" max="10" step="0.5"
+                   aria-describedby="ajuda-nota" placeholder="0 a 10">
+            <small id="ajuda-nota">De 0 a 10. Deixe em branco se ainda não jogou.</small>
+          </div>
+
+          <div>
+            <label for="jogo-horas">Horas jogadas</label>
+            <input type="number" id="jogo-horas" name="horas" min="0" step="0.5" placeholder="Ex.: 35">
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Detalhes adicionais</legend>
+
+          <div>
+            <label for="jogo-capa">URL da capa</label>
+            <input type="url" id="jogo-capa" name="capa" placeholder="https://exemplo.com/capa.jpg">
+          </div>
+
+          <div>
+            <label for="jogo-observacoes">Observações</label>
+            <textarea id="jogo-observacoes" name="observacoes" rows="4" maxlength="500"
+                      placeholder="Anotações pessoais sobre o jogo"></textarea>
+          </div>
+        </fieldset>
+
+        <div>
+          <button type="submit">Salvar jogo</button>
+          <button type="reset">Limpar campos</button>
+          <a href="../index.html">Cancelar</a>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>Minha Gameteca — Trabalho Prático Individual de Desenvolvimento Web (Etapa 1).</p>
+    <p>
+      Dados de jogos previstos via
+      <a href="https://rawg.io/apidocs" target="_blank" rel="noopener noreferrer">RAWG Video Games Database API</a>.
+    </p>
+  </footer>
+</body>
+</html>
