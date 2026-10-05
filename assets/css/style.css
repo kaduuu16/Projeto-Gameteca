@@ -1,0 +1,30 @@
+/*
+  Minha Gameteca - Etapa 1 (HTML e estrutura da interface)
+  A estilização completa será feita na Etapa 2.
+  Por enquanto, apenas ajustes mínimos de legibilidade.
+*/
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.5;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  border: 1px solid #999;
+  padding: 0.4rem 0.6rem;
+  text-align: left;
+}

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" role="img" aria-label="Logotipo Minha Gameteca">
+  <rect width="48" height="48" rx="10" fill="#6c4cf1"/>
+  <g fill="#ffffff">
+    <rect x="9" y="17" width="30" height="16" rx="8"/>
+  </g>
+  <rect x="15" y="23" width="8" height="3" fill="#6c4cf1"/>
+  <rect x="17.5" y="20.5" width="3" height="8" fill="#6c4cf1"/>
+  <circle cx="30" cy="23" r="1.8" fill="#6c4cf1"/>
+  <circle cx="34" cy="27" r="1.8" fill="#6c4cf1"/>
+</svg>
