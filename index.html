@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Minha Gameteca: sistema web para organizar sua coleção de jogos.">
+  <title>Minha Gameteca — Minha coleção</title>
+  <link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <a href="#conteudo">Ir para o conteúdo principal</a>
+
+  <header>
+    <img src="assets/img/logo.svg" alt="Logotipo da Minha Gameteca" width="48" height="48">
+    <div>
+      <h1>Minha Gameteca</h1>
+      <p>Organize os jogos que você tem, está jogando, já zerou ou quer jogar.</p>
+    </div>
+    <nav aria-label="Navegação principal">
+      <ul>
+        <li><a href="index.html" aria-current="page">Minha coleção</a></li>
+        <li><a href="pages/cadastro.html">Cadastrar jogo</a></li>
+        <li><a href="#resumo">Resumo</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="conteudo">
+    <section aria-labelledby="titulo-busca">
+      <h2 id="titulo-busca">Pesquisar, filtrar e ordenar</h2>
+
+      <form id="form-busca" action="#" method="get" role="search" aria-label="Pesquisar, filtrar e ordenar jogos">
+        <div>
+          <label for="busca-titulo">Pesquisar por título</label>
+          <input type="search" id="busca-titulo" name="busca" placeholder="Ex.: The Witcher">
+        </div>
+
+        <fieldset>
+          <legend>Filtros</legend>
+
+          <div>
+            <label for="filtro-plataforma">Plataforma</label>
+            <select id="filtro-plataforma" name="plataforma">
+              <option value="">Todas</option>
+              <option value="pc">PC</option>
+              <option value="playstation-5">PlayStation 5</option>
+              <option value="playstation-4">PlayStation 4</option>
+              <option value="xbox-series">Xbox Series X|S</option>
+              <option value="nintendo-switch">Nintendo Switch</option>
+              <option value="mobile">Mobile</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="filtro-genero">Gênero</label>
+            <select id="filtro-genero" name="genero">
+              <option value="">Todos</option>
+              <option value="acao">Ação</option>
+              <option value="aventura">Aventura</option>
+              <option value="rpg">RPG</option>
+              <option value="plataforma">Plataforma</option>
+              <option value="estrategia">Estratégia</option>
+              <option value="esporte">Esporte</option>
+              <option value="corrida">Corrida</option>
+              <option value="simulacao">Simulação</option>
+              <option value="outro">Outro</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="filtro-status">Status</label>
+            <select id="filtro-status" name="status">
+              <option value="">Todos</option>
+              <option value="quero-jogar">Quero jogar</option>
+              <option value="jogando">Jogando</option>
+              <option value="zerado">Zerado</option>
+              <option value="abandonado">Abandonado</option>
+            </select>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Ordenação</legend>
+
+          <div>
+            <label for="ordenar-por">Ordenar por</label>
+            <select id="ordenar-por" name="ordenar-por">
+              <option value="titulo">Título</option>
+              <option value="nota">Nota pessoal</option>
+              <option value="ano">Ano de lançamento</option>
+              <option value="horas">Horas jogadas</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="ordem">Ordem</label>
+            <select id="ordem" name="ordem">
+              <option value="crescente">Crescente</option>
+              <option value="decrescente">Decrescente</option>
+            </select>
+          </div>
+        </fieldset>
+
+        <div>
+          <button type="submit">Aplicar</button>
+          <button type="reset">Limpar</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>Minha Gameteca — Trabalho Prático Individual de Desenvolvimento Web (Etapa 1).</p>
+    <p>
+      Dados de jogos previstos via
+      <a href="https://rawg.io/apidocs" target="_blank" rel="noopener noreferrer">RAWG Video Games Database API</a>.
+    </p>
+  </footer>
+</body>
+</html>
