@@ -1132,4 +1132,163 @@ legend {
 }
 
 
+/* ==========================================================================
+   7. PÁGINA DE DETALHES E CONFIRMAÇÃO DE EXCLUSÃO
+   ========================================================================== */
+
+/* Ficha do jogo: Grid com áreas nomeadas (uma coluna no celular) */
+.detalhe {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    "topo"
+    "capa"
+    "dados"
+    "obs"
+    "api"
+    "acoes";
+  gap: var(--esp-4) var(--esp-5);
+  padding: var(--esp-5);
+  background-color: var(--papel);
+  border: var(--borda);
+  border-top: 0.75rem solid var(--faixa, var(--tinta));   /* lombada de status no topo */
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+}
+
+.detalhe > header {
+  grid-area: topo;
+}
+
+.detalhe > figure {
+  grid-area: capa;
+}
+
+.bloco-dados {
+  grid-area: dados;
+}
+
+.bloco-observacoes {
+  grid-area: obs;
+}
+
+.bloco-api {
+  grid-area: api;
+}
+
+.detalhe > footer {
+  grid-area: acoes;
+  padding-top: var(--esp-4);
+  border-top: var(--borda);
+}
+
+.detalhe > header h2 {
+  margin-bottom: var(--esp-1);
+  font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2.125rem);
+}
+
+.detalhe > header p {
+  margin: 0;
+  color: var(--tinta-suave);
+}
+
+.detalhe figure {
+  margin: 0;
+}
+
+.detalhe figure img {
+  width: 100%;
+  max-width: 16rem;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border: var(--borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+}
+
+.detalhe figcaption {
+  max-width: 16rem;
+  margin-top: var(--esp-3);
+  font-size: 0.875rem;
+  color: var(--tinta-suave);
+}
+
+.detalhe section {
+  padding-top: var(--esp-3);
+  border-top: 2px solid var(--fundo);
+}
+
+.detalhe section h3 {
+  margin-bottom: var(--esp-3);
+}
+
+/* Dados como ficha: rótulo à esquerda, valor em destaque à direita */
+.detalhe dl {
+  display: grid;
+  grid-template-columns: minmax(7rem, max-content) minmax(0, 1fr);
+  gap: var(--esp-2) var(--esp-4);
+  margin: 0;
+}
+
+.detalhe dt {
+  color: var(--tinta-suave);
+}
+
+.detalhe dd {
+  margin: 0;
+  font-weight: 700;
+}
+
+.detalhe .selo {
+  justify-self: start;
+}
+
+.detalhe ul {
+  margin-bottom: 0;
+  padding-left: 1.25rem;
+}
+
+/* "Voltar" fica à esquerda; editar e excluir, à direita */
+.detalhe .acoes .botao--fantasma {
+  margin-right: auto;
+}
+
+
+/* ---- Diálogo de confirmação de exclusão ---------------------------------- */
+
+dialog {
+  width: min(92vw, 30rem);   /* nunca passa da largura da tela */
+  padding: var(--esp-5);
+  color: var(--tinta);
+  background-color: var(--papel);
+  border: var(--borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+}
+
+dialog::backdrop {
+  background-color: rgb(29 27 58 / 0.65);
+}
+
+dialog h2 {
+  color: var(--perigo-texto);
+}
+
+dialog .acoes {
+  justify-content: flex-end;
+}
+
+/* Movimento que responde a uma ação da pessoa: o diálogo sobe ao abrir */
+dialog[open] {
+  animation: dialogo-entra 0.18s ease-out;
+}
+
+@keyframes dialogo-entra {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+}
+
+
 /* === FIM (os próximos blocos são acrescentados acima desta linha) === */
