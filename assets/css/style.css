@@ -5,10 +5,10 @@
     1. Identidade visual (tokens, Box Model, tipografia, links)
     2. Layout da página (topo, rodapé, grid principal)
     3. Botões e estados de interação
-    4. Formulário de cadastro e edição
-    5. Listagem, busca, filtros e resumo
-    6. Página de detalhes e confirmação de exclusão
-    7. Mensagens
+    4. Formulários (cadastro, edição, busca e filtros)
+    5. Mensagens e avisos
+    6. Listagem, busca, filtros e resumo
+    7. Página de detalhes e confirmação de exclusão
     8. Responsividade (Media Queries)
 
   Abordagem mobile-first: os estilos base servem para telas pequenas e
@@ -541,6 +541,360 @@ body > header :focus-visible {
   .botao:active {
     transform: none;
   }
+}
+
+
+/* ==========================================================================
+   4. FORMULÁRIOS (cadastro, edição, busca e filtros)
+   ========================================================================== */
+
+label {
+  display: block;
+  margin-bottom: var(--esp-1);
+  font-weight: 700;
+}
+
+/* Asterisco de campo obrigatório */
+label abbr,
+legend abbr {
+  font-weight: 800;
+  color: var(--perigo);
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.75rem;
+  font: inherit;
+  color: var(--tinta);
+  background-color: var(--papel);
+  border: 2px solid var(--linha-campo);
+  border-radius: var(--raio);
+  accent-color: var(--violeta);
+}
+
+textarea {
+  min-height: 7rem;
+  resize: vertical;          /* só altura: evita estourar o layout */
+}
+
+::placeholder {
+  color: #6B6990;            /* contraste de 5,2:1 sobre o branco */
+  opacity: 1;
+}
+
+/* Estados dos campos */
+input:hover,
+select:hover,
+textarea:hover {
+  border-color: var(--tinta);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--violeta);
+  outline: 3px solid var(--violeta);
+  outline-offset: 2px;
+}
+
+/* Só marca erro depois que a pessoa interagiu com o campo */
+input:user-invalid,
+select:user-invalid,
+textarea:user-invalid {
+  border-color: var(--perigo);
+  background-color: var(--perigo-fundo);
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+  cursor: not-allowed;
+  color: var(--tinta-suave);
+  background-color: var(--fundo);
+}
+
+.campo {
+  min-width: 0;              /* campos em grid não podem forçar largura */
+}
+
+.ajuda {
+  display: block;
+  margin-top: var(--esp-1);
+  color: var(--tinta-suave);
+}
+
+.nota-obrigatorio {
+  font-size: 0.9375rem;
+  color: var(--tinta-suave);
+}
+
+
+/* ---- Grupos de campos (fieldset) ----------------------------------------- */
+
+fieldset {
+  min-width: 0;              /* fieldset tem min-width implícito que causa rolagem lateral */
+  margin: 0 0 var(--esp-5);
+  padding: var(--esp-4);
+  border: 2px solid var(--tinta);
+  border-radius: var(--raio);
+}
+
+legend {
+  padding: 0 var(--esp-2);
+  font-family: var(--fonte-titulo);
+  font-size: 1.0625rem;
+  font-weight: 800;
+}
+
+/* Grid responsivo: tantas colunas de 15rem quanto couberem */
+.formulario fieldset {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: var(--esp-4) var(--esp-5);
+}
+
+/* Campos longos ocupam a linha toda */
+.formulario .campo:has(input[name="titulo"]),
+.formulario .campo:has(textarea),
+.formulario .campo:has(input[type="url"]),
+.formulario .opcoes {
+  grid-column: 1 / -1;
+}
+
+
+/* ---- Status como opções em formato de "chip" ----------------------------- */
+
+.formulario .opcoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.opcoes legend {
+  margin-bottom: var(--esp-2);
+  padding: 0;
+  font-family: var(--fonte-texto);
+  font-size: 1rem;
+}
+
+.opcao {
+  position: relative;
+}
+
+/* O botão de rádio real continua no HTML (teclado e leitor de tela), só escondido */
+.opcao input {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+}
+
+.opcao label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--esp-2);
+  min-height: 2.75rem;
+  margin: 0;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  background-color: var(--papel);
+  border: 2px solid var(--linha-campo);
+  border-radius: 999px;
+}
+
+.opcao label:hover {
+  background-color: var(--fundo);
+  border-color: var(--tinta);
+}
+
+.opcao input:focus-visible {
+  outline: none;             /* o foco aparece no rótulo, que é o que se vê */
+}
+
+.opcao input:focus-visible + label {
+  outline: 3px solid var(--violeta);
+  outline-offset: 3px;
+}
+
+/* Opção marcada: cor do status + sinal "✓", para não depender só da cor */
+.opcao input:checked + label::before {
+  content: "\2713";
+  font-weight: 800;
+}
+
+.opcao input[value="quero-jogar"]:checked + label {
+  color: var(--quero-jogar-texto);
+  background-color: var(--quero-jogar-fundo);
+  border-color: var(--quero-jogar-faixa);
+}
+
+.opcao input[value="jogando"]:checked + label {
+  color: var(--jogando-texto);
+  background-color: var(--jogando-fundo);
+  border-color: var(--jogando-faixa);
+}
+
+.opcao input[value="zerado"]:checked + label {
+  color: var(--zerado-texto);
+  background-color: var(--zerado-fundo);
+  border-color: var(--zerado-faixa);
+}
+
+.opcao input[value="abandonado"]:checked + label {
+  color: var(--abandonado-texto);
+  background-color: var(--abandonado-fundo);
+  border-color: var(--abandonado-faixa);
+}
+
+
+/* ---- Busca na API (cadastro) --------------------------------------------- */
+
+.painel--api {
+  border-style: dashed;      /* opcional: pesa menos que o formulário principal */
+  box-shadow: none;
+}
+
+/* Campo de busca com botão ao lado */
+.campo--com-botao {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--esp-2);
+  align-items: end;
+  margin-bottom: var(--esp-5);
+}
+
+.campo--com-botao label {
+  grid-column: 1 / -1;
+  margin-bottom: 0;
+}
+
+.resultados-api {
+  display: grid;
+  gap: var(--esp-2);
+  margin: 0 0 var(--esp-4);
+  padding: 0;
+  list-style: none;
+}
+
+.resultados-api li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--esp-1) var(--esp-2);
+  padding: var(--esp-3) var(--esp-4);
+  background-color: var(--fundo);
+  border: 2px solid var(--tinta);
+  border-radius: var(--raio);
+}
+
+.resultados-api .botao {
+  margin-left: auto;         /* empurra o botão para a direita */
+}
+
+
+/* ==========================================================================
+   5. MENSAGENS E AVISOS
+   ========================================================================== */
+
+.mensagem,
+.aviso {
+  display: flex;
+  gap: var(--esp-3);
+  align-items: flex-start;
+  max-width: none;
+  margin: 0;
+  padding: var(--esp-3) var(--esp-4);
+  border: 2px solid;
+  border-radius: var(--raio);
+}
+
+/* Ícone textual de cada tipo de mensagem */
+.mensagem::before,
+.aviso::before {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 0.9375rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--papel);
+  border-radius: 50%;
+}
+
+.mensagem--erro {
+  color: var(--perigo-texto);
+  background-color: var(--perigo-fundo);
+  border-color: var(--perigo);
+}
+
+.mensagem--erro::before {
+  content: "!";
+  background-color: var(--perigo);
+}
+
+.mensagem--sucesso {
+  color: var(--sucesso-texto);
+  background-color: var(--sucesso-fundo);
+  border-color: var(--zerado-faixa);
+}
+
+.mensagem--sucesso::before {
+  content: "\2713";
+  background-color: var(--zerado-faixa);
+}
+
+.aviso--info {
+  color: var(--info-texto);
+  background-color: var(--info-fundo);
+  border-color: var(--quero-jogar-faixa);
+}
+
+.aviso--info::before {
+  content: "i";
+  background-color: var(--quero-jogar-faixa);
+}
+
+/* Lista vazia: convite para agir, não só um aviso */
+.mensagem--vazia {
+  justify-content: center;
+  padding: var(--esp-6) var(--esp-4);
+  color: var(--tinta-suave);
+  background-color: var(--papel);
+  border-style: dashed;
+  border-color: var(--tinta-suave);
+}
+
+.mensagem--vazia::before {
+  display: none;
+}
+
+/*
+  Mensagens do formulário aparecem sozinhas, só com CSS:
+  - erro, quando algum campo foi tocado e está inválido;
+  - sucesso, quando todos os campos obrigatórios estão válidos.
+*/
+.formulario .mensagem {
+  display: none;
+  margin-bottom: var(--esp-4);
+}
+
+.formulario:has(:user-invalid) .mensagem--erro {
+  display: flex;
+}
+
+.formulario:valid .mensagem--sucesso {
+  display: flex;
 }
 
 
