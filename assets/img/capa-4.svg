@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="400" viewBox="0 0 300 400" role="img" aria-label="Capa provisória: pista em perspectiva">
+  <rect width="300" height="400" fill="#0F3D2E"/>
+  <polygon points="150,120 0,400 300,400" fill="#1C1C1C"/>
+  <polygon points="147,130 141,400 159,400 153,130" fill="#F2F2F2"/>
+  <polygon points="150,120 0,400 40,400 150,150" fill="#F25C54"/>
+  <polygon points="150,120 300,400 260,400 150,150" fill="#F7B267"/>
+  <rect y="0" width="300" height="120" fill="#145A42"/>
+  <circle cx="150" cy="120" r="26" fill="#F7B267"/>
+</svg>
