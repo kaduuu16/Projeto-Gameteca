@@ -184,4 +184,212 @@ a:hover {
 }
 
 
+/* ==========================================================================
+   2. LAYOUT DA PÁGINA
+   Flexbox: topo, navegação, rodapé e estrutura vertical da página.
+   Grid: áreas da página principal (busca, lista e resumo).
+   ========================================================================== */
+
+/* Estrutura vertical: o rodapé desce até o fim da janela em páginas curtas. */
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+/*
+  Margem lateral que limita o conteúdo a --largura-max e mantém o fundo do
+  topo e do rodapé de ponta a ponta. Em telas pequenas vale o mínimo de 1rem.
+*/
+body > header,
+main,
+body > footer {
+  padding-inline: max(var(--esp-4), calc((100% - var(--largura-max)) / 2));
+}
+
+
+/* ---- Topo ---------------------------------------------------------------- */
+
+body > header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--esp-3) var(--esp-4);
+  padding-block: var(--esp-4);
+  color: var(--papel);
+  background-color: var(--tinta);
+  border-bottom: 4px solid var(--violeta);
+}
+
+body > header > img {
+  width: 3rem;
+  height: 3rem;
+  flex: none;
+}
+
+body > header > div {
+  flex: 1 1 14rem;           /* ocupa o espaço livre e quebra de linha se faltar */
+  min-width: 0;
+}
+
+body > header h1 {
+  margin: 0;
+  color: var(--papel);
+}
+
+body > header p {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: #DAD6FF;
+}
+
+/* Navegação principal: lista horizontal que quebra linha quando precisa */
+body > header nav {
+  flex: 1 1 100%;
+}
+
+body > header nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+body > header nav a {
+  display: inline-block;
+  padding: 0.5rem 0.875rem;
+  font-weight: 700;
+  color: #DAD6FF;
+  text-decoration: none;
+  border: 2px solid transparent;
+  border-radius: var(--raio);
+}
+
+body > header nav a[aria-current="page"] {
+  color: var(--papel);
+  background-color: var(--violeta);
+}
+
+
+/* ---- Corpo da página (grid) ---------------------------------------------- */
+
+main {
+  flex: 1 0 auto;            /* empurra o rodapé para baixo */
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);   /* minmax(0, …) evita estouro lateral */
+  gap: var(--esp-5);
+  align-content: start;
+  padding-block: var(--esp-5) var(--esp-7);
+}
+
+/* Páginas de formulário e detalhes: coluna de leitura confortável */
+.pagina-formulario > *,
+.pagina-detalhe > * {
+  max-width: 56rem;
+}
+
+/* Página da coleção: áreas nomeadas (o desktop reorganiza em Media Query) */
+.pagina-colecao > .aviso {
+  grid-area: aviso;
+}
+
+.area-busca {
+  grid-area: busca;
+}
+
+.area-lista {
+  grid-area: lista;
+}
+
+.area-resumo {
+  grid-area: resumo;
+}
+
+.pagina-colecao {
+  grid-template-areas:
+    "aviso"
+    "busca"
+    "lista"
+    "resumo";
+}
+
+
+/* ---- Superfícies (painéis) ---------------------------------------------- */
+
+.painel,
+.area-busca,
+.area-resumo {
+  padding: var(--esp-5);
+  background-color: var(--papel);
+  border: var(--borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+}
+
+
+/* ---- Trilha de navegação (breadcrumb) ------------------------------------ */
+
+.trilha ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-2);
+  margin: 0;
+  padding: 0;
+  font-size: 0.9375rem;
+  color: var(--tinta-suave);
+  list-style: none;
+}
+
+.trilha li + li::before {
+  content: "/";
+  margin-right: var(--esp-2);
+}
+
+.trilha [aria-current="page"] {
+  font-weight: 700;
+  color: var(--tinta);
+}
+
+
+/* ---- Rodapé -------------------------------------------------------------- */
+
+body > footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--esp-2) var(--esp-5);
+  padding-block: var(--esp-5);
+  font-size: 0.9375rem;
+  color: var(--tinta-suave);
+  background-color: var(--papel);
+  border-top: var(--borda);
+}
+
+body > footer p {
+  margin: 0;
+}
+
+
+/* ---- Link "pular para o conteúdo" (acessibilidade) ----------------------- */
+
+.pular-link {
+  position: absolute;
+  top: -5rem;                /* fora da tela até receber foco */
+  left: var(--esp-4);
+  z-index: 10;
+  padding: var(--esp-2) var(--esp-4);
+  font-weight: 700;
+  color: var(--tinta);
+  text-decoration: none;
+  background-color: var(--ambar);
+  border: var(--borda);
+  border-radius: var(--raio);
+}
+
+.pular-link:focus {
+  top: var(--esp-2);
+}
+
+
 /* === FIM (os próximos blocos são acrescentados acima desta linha) === */
