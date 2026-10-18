@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-  <a href="#conteudo">Ir para o conteúdo principal</a>
+  <a class="pular-link" href="#conteudo">Ir para o conteúdo principal</a>
 
   <header>
     <img src="../assets/img/logo.svg" alt="Logotipo da Minha Gameteca" width="48" height="48">
@@ -27,7 +27,7 @@
   </header>
 
   <main id="conteudo">
-    <nav aria-label="Trilha de navegação">
+    <nav class="trilha" aria-label="Trilha de navegação">
       <ol>
         <li><a href="../index.html">Minha coleção</a></li>
         <li><a href="detalhes.html">Detalhes do jogo</a></li>
@@ -35,27 +35,27 @@
       </ol>
     </nav>
 
-    <section aria-labelledby="titulo-editar">
+    <section class="painel" aria-labelledby="titulo-editar">
       <h2 id="titulo-editar">Editar jogo</h2>
-      <p>
+      <p class="nota-obrigatorio">
         Formulário já preenchido com os dados de exemplo de
         <strong>The Witcher 3: Wild Hunt</strong>. Na Etapa 3, ele será carregado
         a partir do jogo selecionado.
       </p>
 
-      <form id="form-editar-jogo" action="#" method="post">
+      <form id="form-editar-jogo" class="formulario" action="#" method="post">
         <input type="hidden" id="editar-id" name="id" value="1">
 
         <fieldset>
           <legend>Identificação</legend>
 
-          <div>
+          <div class="campo">
             <label for="editar-titulo">Título <abbr title="obrigatório">*</abbr></label>
             <input type="text" id="editar-titulo" name="titulo" maxlength="120" required
                    value="The Witcher 3: Wild Hunt">
           </div>
 
-          <div>
+          <div class="campo">
             <label for="editar-plataforma">Plataforma <abbr title="obrigatório">*</abbr></label>
             <select id="editar-plataforma" name="plataforma" required>
               <option value="" disabled>Selecione</option>
@@ -68,7 +68,7 @@
             </select>
           </div>
 
-          <div>
+          <div class="campo">
             <label for="editar-genero">Gênero <abbr title="obrigatório">*</abbr></label>
             <select id="editar-genero" name="genero" required>
               <option value="" disabled>Selecione</option>
@@ -84,7 +84,7 @@
             </select>
           </div>
 
-          <div>
+          <div class="campo">
             <label for="editar-ano">Ano de lançamento <abbr title="obrigatório">*</abbr></label>
             <input type="number" id="editar-ano" name="ano" min="1970" max="2100" step="1" required
                    value="2015">
@@ -94,34 +94,34 @@
         <fieldset>
           <legend>Situação na coleção</legend>
 
-          <fieldset>
+          <fieldset class="opcoes">
             <legend>Status <abbr title="obrigatório">*</abbr></legend>
-            <div>
+            <div class="opcao">
               <input type="radio" id="editar-status-quero-jogar" name="status" value="quero-jogar" required>
               <label for="editar-status-quero-jogar">Quero jogar</label>
             </div>
-            <div>
+            <div class="opcao">
               <input type="radio" id="editar-status-jogando" name="status" value="jogando">
               <label for="editar-status-jogando">Jogando</label>
             </div>
-            <div>
+            <div class="opcao">
               <input type="radio" id="editar-status-zerado" name="status" value="zerado" checked>
               <label for="editar-status-zerado">Zerado</label>
             </div>
-            <div>
+            <div class="opcao">
               <input type="radio" id="editar-status-abandonado" name="status" value="abandonado">
               <label for="editar-status-abandonado">Abandonado</label>
             </div>
           </fieldset>
 
-          <div>
+          <div class="campo">
             <label for="editar-nota">Nota pessoal</label>
             <input type="number" id="editar-nota" name="nota" min="0" max="10" step="0.5"
                    aria-describedby="editar-ajuda-nota" value="10">
             <small id="editar-ajuda-nota">De 0 a 10. Deixe em branco se ainda não jogou.</small>
           </div>
 
-          <div>
+          <div class="campo">
             <label for="editar-horas">Horas jogadas</label>
             <input type="number" id="editar-horas" name="horas" min="0" step="0.5" value="120">
           </div>
@@ -130,20 +130,22 @@
         <fieldset>
           <legend>Detalhes adicionais</legend>
 
-          <div>
+          <div class="campo">
             <label for="editar-capa">URL da capa</label>
             <input type="url" id="editar-capa" name="capa" placeholder="https://exemplo.com/capa.jpg">
           </div>
 
-          <div>
+          <div class="campo">
             <label for="editar-observacoes">Observações</label>
             <textarea id="editar-observacoes" name="observacoes" rows="4" maxlength="500">Joguei todas as missões principais e as duas expansões. Quero rejogar com outro final.</textarea>
           </div>
         </fieldset>
 
-        <div>
-          <button type="submit">Salvar alterações</button>
-          <a href="detalhes.html">Cancelar</a>
+        <p class="mensagem mensagem--erro" role="alert">Há campos com problema. Corrija os destacados em vermelho antes de salvar.</p>
+
+        <div class="acoes">
+          <button type="submit" class="botao botao--primario">Salvar alterações</button>
+          <a class="botao botao--fantasma" href="detalhes.html">Cancelar</a>
         </div>
       </form>
     </section>

@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-  <a href="#conteudo">Ir para o conteúdo principal</a>
+  <a class="pular-link" href="#conteudo">Ir para o conteúdo principal</a>
 
   <header>
     <img src="assets/img/logo.svg" alt="Logotipo da Minha Gameteca" width="48" height="48">
@@ -27,11 +27,16 @@
   </header>
 
   <main id="conteudo">
-    <section aria-labelledby="titulo-busca">
+    <p class="aviso aviso--info" role="note">
+      <strong>Dados de exemplo.</strong>
+      Esta lista é fixa na Etapa 2. Cadastro, busca e filtros passam a funcionar na Etapa 3.
+    </p>
+
+    <section class="area-busca" aria-labelledby="titulo-busca">
       <h2 id="titulo-busca">Pesquisar, filtrar e ordenar</h2>
 
       <form id="form-busca" action="#" method="get" role="search" aria-label="Pesquisar, filtrar e ordenar jogos">
-        <div>
+        <div class="campo campo--busca">
           <label for="busca-titulo">Pesquisar por título</label>
           <input type="search" id="busca-titulo" name="busca" placeholder="Ex.: The Witcher">
         </div>
@@ -39,7 +44,7 @@
         <fieldset>
           <legend>Filtros</legend>
 
-          <div>
+          <div class="campo">
             <label for="filtro-plataforma">Plataforma</label>
             <select id="filtro-plataforma" name="plataforma">
               <option value="">Todas</option>
@@ -52,7 +57,7 @@
             </select>
           </div>
 
-          <div>
+          <div class="campo">
             <label for="filtro-genero">Gênero</label>
             <select id="filtro-genero" name="genero">
               <option value="">Todos</option>
@@ -68,7 +73,7 @@
             </select>
           </div>
 
-          <div>
+          <div class="campo">
             <label for="filtro-status">Status</label>
             <select id="filtro-status" name="status">
               <option value="">Todos</option>
@@ -83,7 +88,7 @@
         <fieldset>
           <legend>Ordenação</legend>
 
-          <div>
+          <div class="campo">
             <label for="ordenar-por">Ordenar por</label>
             <select id="ordenar-por" name="ordenar-por">
               <option value="titulo">Título</option>
@@ -93,7 +98,7 @@
             </select>
           </div>
 
-          <div>
+          <div class="campo">
             <label for="ordem">Ordem</label>
             <select id="ordem" name="ordem">
               <option value="crescente">Crescente</option>
@@ -102,22 +107,22 @@
           </div>
         </fieldset>
 
-        <div>
-          <button type="submit">Aplicar</button>
-          <button type="reset">Limpar</button>
+        <div class="acoes">
+          <button type="submit" class="botao botao--primario">Aplicar</button>
+          <button type="reset" class="botao botao--secundario">Limpar</button>
         </div>
       </form>
     </section>
 
-    <section aria-labelledby="titulo-colecao">
+    <section class="area-lista" aria-labelledby="titulo-colecao">
       <h2 id="titulo-colecao">Meus jogos</h2>
-      <p aria-live="polite">Exibindo 5 de 5 jogos.</p>
-      <p id="mensagem-vazia" hidden>Nenhum jogo encontrado. Tente mudar a pesquisa ou os filtros.</p>
+      <p class="contador" aria-live="polite">Exibindo 5 de 5 jogos.</p>
+      <p id="mensagem-vazia" class="mensagem mensagem--vazia" hidden>Nenhum jogo encontrado. Tente mudar a pesquisa ou os filtros.</p>
 
-      <ul id="lista-jogos">
+      <ul id="lista-jogos" class="lista-jogos">
         <li>
-          <article aria-labelledby="jogo-1-titulo" data-id="1">
-            <img src="assets/img/capa-padrao.svg" alt="Capa provisória do jogo The Witcher 3: Wild Hunt" width="150" height="200">
+          <article class="jogo" aria-labelledby="jogo-1-titulo" data-id="1" data-status="zerado">
+            <img src="assets/img/capa-1.svg" alt="Capa provisória do jogo The Witcher 3: Wild Hunt" width="150" height="200">
             <h3 id="jogo-1-titulo">The Witcher 3: Wild Hunt</h3>
             <dl>
               <dt>Plataforma</dt>
@@ -127,21 +132,21 @@
               <dt>Ano</dt>
               <dd>2015</dd>
               <dt>Status</dt>
-              <dd>Zerado</dd>
+              <dd class="selo">Zerado</dd>
               <dt>Nota</dt>
               <dd>10 / 10</dd>
             </dl>
-            <p>
-              <a href="pages/detalhes.html">Ver detalhes</a>
-              <a href="pages/editar.html">Editar</a>
-              <button type="button">Excluir</button>
+            <p class="acoes">
+              <a class="botao botao--primario" href="pages/detalhes.html">Ver detalhes</a>
+              <a class="botao botao--secundario" href="pages/editar.html">Editar</a>
+              <button type="button" class="botao botao--perigo">Excluir</button>
             </p>
           </article>
         </li>
 
         <li>
-          <article aria-labelledby="jogo-2-titulo" data-id="2">
-            <img src="assets/img/capa-padrao.svg" alt="Capa provisória do jogo Hollow Knight" width="150" height="200">
+          <article class="jogo" aria-labelledby="jogo-2-titulo" data-id="2" data-status="jogando">
+            <img src="assets/img/capa-2.svg" alt="Capa provisória do jogo Hollow Knight" width="150" height="200">
             <h3 id="jogo-2-titulo">Hollow Knight</h3>
             <dl>
               <dt>Plataforma</dt>
@@ -151,21 +156,21 @@
               <dt>Ano</dt>
               <dd>2017</dd>
               <dt>Status</dt>
-              <dd>Jogando</dd>
+              <dd class="selo">Jogando</dd>
               <dt>Nota</dt>
               <dd>9 / 10</dd>
             </dl>
-            <p>
-              <a href="pages/detalhes.html">Ver detalhes</a>
-              <a href="pages/editar.html">Editar</a>
-              <button type="button">Excluir</button>
+            <p class="acoes">
+              <a class="botao botao--primario" href="pages/detalhes.html">Ver detalhes</a>
+              <a class="botao botao--secundario" href="pages/editar.html">Editar</a>
+              <button type="button" class="botao botao--perigo">Excluir</button>
             </p>
           </article>
         </li>
 
         <li>
-          <article aria-labelledby="jogo-3-titulo" data-id="3">
-            <img src="assets/img/capa-padrao.svg" alt="Capa provisória do jogo Celeste" width="150" height="200">
+          <article class="jogo" aria-labelledby="jogo-3-titulo" data-id="3" data-status="zerado">
+            <img src="assets/img/capa-3.svg" alt="Capa provisória do jogo Celeste" width="150" height="200">
             <h3 id="jogo-3-titulo">Celeste</h3>
             <dl>
               <dt>Plataforma</dt>
@@ -175,21 +180,21 @@
               <dt>Ano</dt>
               <dd>2018</dd>
               <dt>Status</dt>
-              <dd>Zerado</dd>
+              <dd class="selo">Zerado</dd>
               <dt>Nota</dt>
               <dd>9 / 10</dd>
             </dl>
-            <p>
-              <a href="pages/detalhes.html">Ver detalhes</a>
-              <a href="pages/editar.html">Editar</a>
-              <button type="button">Excluir</button>
+            <p class="acoes">
+              <a class="botao botao--primario" href="pages/detalhes.html">Ver detalhes</a>
+              <a class="botao botao--secundario" href="pages/editar.html">Editar</a>
+              <button type="button" class="botao botao--perigo">Excluir</button>
             </p>
           </article>
         </li>
 
         <li>
-          <article aria-labelledby="jogo-4-titulo" data-id="4">
-            <img src="assets/img/capa-padrao.svg" alt="Capa provisória do jogo Forza Horizon 5" width="150" height="200">
+          <article class="jogo" aria-labelledby="jogo-4-titulo" data-id="4" data-status="abandonado">
+            <img src="assets/img/capa-4.svg" alt="Capa provisória do jogo Forza Horizon 5" width="150" height="200">
             <h3 id="jogo-4-titulo">Forza Horizon 5</h3>
             <dl>
               <dt>Plataforma</dt>
@@ -199,21 +204,21 @@
               <dt>Ano</dt>
               <dd>2021</dd>
               <dt>Status</dt>
-              <dd>Abandonado</dd>
+              <dd class="selo">Abandonado</dd>
               <dt>Nota</dt>
               <dd>7 / 10</dd>
             </dl>
-            <p>
-              <a href="pages/detalhes.html">Ver detalhes</a>
-              <a href="pages/editar.html">Editar</a>
-              <button type="button">Excluir</button>
+            <p class="acoes">
+              <a class="botao botao--primario" href="pages/detalhes.html">Ver detalhes</a>
+              <a class="botao botao--secundario" href="pages/editar.html">Editar</a>
+              <button type="button" class="botao botao--perigo">Excluir</button>
             </p>
           </article>
         </li>
 
         <li>
-          <article aria-labelledby="jogo-5-titulo" data-id="5">
-            <img src="assets/img/capa-padrao.svg" alt="Capa provisória do jogo Grand Theft Auto VI" width="150" height="200">
+          <article class="jogo" aria-labelledby="jogo-5-titulo" data-id="5" data-status="quero-jogar">
+            <img src="assets/img/capa-5.svg" alt="Capa provisória do jogo Grand Theft Auto VI" width="150" height="200">
             <h3 id="jogo-5-titulo">Grand Theft Auto VI</h3>
             <dl>
               <dt>Plataforma</dt>
@@ -223,21 +228,21 @@
               <dt>Ano</dt>
               <dd>2026 (previsto)</dd>
               <dt>Status</dt>
-              <dd>Quero jogar</dd>
+              <dd class="selo">Quero jogar</dd>
               <dt>Nota</dt>
               <dd>Ainda sem nota</dd>
             </dl>
-            <p>
-              <a href="pages/detalhes.html">Ver detalhes</a>
-              <a href="pages/editar.html">Editar</a>
-              <button type="button">Excluir</button>
+            <p class="acoes">
+              <a class="botao botao--primario" href="pages/detalhes.html">Ver detalhes</a>
+              <a class="botao botao--secundario" href="pages/editar.html">Editar</a>
+              <button type="button" class="botao botao--perigo">Excluir</button>
             </p>
           </article>
         </li>
       </ul>
     </section>
 
-    <aside id="resumo" aria-labelledby="titulo-resumo">
+    <aside id="resumo" class="area-resumo" aria-labelledby="titulo-resumo">
       <h2 id="titulo-resumo">Resumo da coleção</h2>
 
       <table>

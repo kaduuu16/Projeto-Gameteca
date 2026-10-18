@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-  <a href="#conteudo">Ir para o conteúdo principal</a>
+  <a class="pular-link" href="#conteudo">Ir para o conteúdo principal</a>
 
   <header>
     <img src="../assets/img/logo.svg" alt="Logotipo da Minha Gameteca" width="48" height="48">
@@ -27,21 +27,21 @@
   </header>
 
   <main id="conteudo">
-    <nav aria-label="Trilha de navegação">
+    <nav class="trilha" aria-label="Trilha de navegação">
       <ol>
         <li><a href="../index.html">Minha coleção</a></li>
         <li aria-current="page">Detalhes do jogo</li>
       </ol>
     </nav>
 
-    <article aria-labelledby="detalhe-titulo">
+    <article class="detalhe" aria-labelledby="detalhe-titulo" data-status="zerado">
       <header>
         <h2 id="detalhe-titulo">The Witcher 3: Wild Hunt</h2>
         <p>RPG · PC · 2015</p>
       </header>
 
       <figure>
-        <img src="../assets/img/capa-padrao.svg"
+        <img src="../assets/img/capa-1.svg"
              alt="Capa provisória do jogo The Witcher 3: Wild Hunt"
              width="225" height="300">
         <figcaption>Capa provisória. A capa real virá da URL cadastrada ou da API RAWG.</figcaption>
@@ -57,7 +57,7 @@
           <dt>Ano de lançamento</dt>
           <dd>2015</dd>
           <dt>Status</dt>
-          <dd>Zerado</dd>
+          <dd class="selo">Zerado</dd>
           <dt>Nota pessoal</dt>
           <dd>10 / 10</dd>
           <dt>Horas jogadas</dt>
@@ -83,15 +83,16 @@
       </section>
 
       <footer>
-        <p>
-          <a href="../index.html">Voltar para a coleção</a>
-          <a href="editar.html">Editar jogo</a>
-          <button type="button">Excluir jogo</button>
+        <p class="acoes">
+          <a class="botao botao--fantasma" href="../index.html">Voltar para a coleção</a>
+          <a class="botao botao--primario" href="editar.html">Editar jogo</a>
+          <button type="button" class="botao botao--perigo" commandfor="dialogo-exclusao" command="show-modal">Excluir jogo</button>
         </p>
       </footer>
     </article>
 
-    <!-- Confirmação de exclusão: ficará oculta até ser aberta com JavaScript (Etapa 3). -->
+    <!-- Confirmação de exclusão: abre pelo botão "Excluir jogo" (atributo command).
+         A exclusão em si será implementada com JavaScript na Etapa 3. -->
     <dialog id="dialogo-exclusao" aria-labelledby="dialogo-titulo">
       <form method="dialog">
         <h2 id="dialogo-titulo">Excluir jogo?</h2>
@@ -99,8 +100,10 @@
           Tem certeza de que deseja excluir <strong>The Witcher 3: Wild Hunt</strong>
           da sua coleção? Esta ação não poderá ser desfeita.
         </p>
-        <button value="cancelar">Cancelar</button>
-        <button value="confirmar">Sim, excluir</button>
+        <div class="acoes">
+          <button value="cancelar" class="botao botao--secundario">Cancelar</button>
+          <button value="confirmar" class="botao botao--perigo">Sim, excluir</button>
+        </div>
       </form>
     </dialog>
   </main>

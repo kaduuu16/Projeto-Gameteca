@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-  <a href="#conteudo">Ir para o conteúdo principal</a>
+  <a class="pular-link" href="#conteudo">Ir para o conteúdo principal</a>
 
   <header>
     <img src="../assets/img/logo.svg" alt="Logotipo da Minha Gameteca" width="48" height="48">
@@ -27,14 +27,14 @@
   </header>
 
   <main id="conteudo">
-    <nav aria-label="Trilha de navegação">
+    <nav class="trilha" aria-label="Trilha de navegação">
       <ol>
         <li><a href="../index.html">Minha coleção</a></li>
         <li aria-current="page">Cadastrar jogo</li>
       </ol>
     </nav>
 
-    <section aria-labelledby="titulo-busca-api">
+    <section class="painel painel--api" aria-labelledby="titulo-busca-api">
       <h2 id="titulo-busca-api">Buscar jogo na RAWG (opcional)</h2>
       <p>
         Pesquise pelo nome para preencher automaticamente título, gênero, plataformas,
@@ -42,44 +42,44 @@
       </p>
 
       <form id="form-busca-api" action="#" method="get" role="search" aria-label="Buscar jogo na API RAWG">
-        <div>
+        <div class="campo campo--com-botao">
           <label for="busca-api">Nome do jogo</label>
           <input type="search" id="busca-api" name="busca-api" placeholder="Ex.: Hollow Knight">
-          <button type="submit">Buscar na RAWG</button>
+          <button type="submit" class="botao botao--primario">Buscar na RAWG</button>
         </div>
       </form>
 
       <h3>Resultados da busca</h3>
       <p>Exemplo estático de como os resultados serão apresentados:</p>
-      <ul>
+      <ul class="resultados-api">
         <li>
           <strong>Hollow Knight</strong> (2017) — PC, Nintendo Switch
-          <button type="button">Usar estes dados</button>
+          <button type="button" class="botao botao--secundario botao--pequeno">Usar estes dados</button>
         </li>
         <li>
           <strong>Hollow Knight: Silksong</strong> — PC, Nintendo Switch
-          <button type="button">Usar estes dados</button>
+          <button type="button" class="botao botao--secundario botao--pequeno">Usar estes dados</button>
         </li>
       </ul>
     </section>
 
-    <section aria-labelledby="titulo-form-jogo">
+    <section class="painel" aria-labelledby="titulo-form-jogo">
       <h2 id="titulo-form-jogo">Dados do jogo</h2>
-      <p>Os campos marcados com <abbr title="obrigatório">*</abbr> são obrigatórios.</p>
+      <p class="nota-obrigatorio">Os campos marcados com <abbr title="obrigatório">*</abbr> são obrigatórios.</p>
 
-      <form id="form-jogo" action="#" method="post">
+      <form id="form-jogo" class="formulario" action="#" method="post">
         <input type="hidden" id="jogo-id" name="id">
 
         <fieldset>
           <legend>Identificação</legend>
 
-          <div>
+          <div class="campo">
             <label for="jogo-titulo">Título <abbr title="obrigatório">*</abbr></label>
             <input type="text" id="jogo-titulo" name="titulo" maxlength="120" required
                    placeholder="Ex.: The Witcher 3: Wild Hunt">
           </div>
 
-          <div>
+          <div class="campo">
             <label for="jogo-plataforma">Plataforma <abbr title="obrigatório">*</abbr></label>
             <select id="jogo-plataforma" name="plataforma" required>
               <option value="" selected disabled>Selecione</option>
@@ -92,7 +92,7 @@
             </select>
           </div>
 
-          <div>
+          <div class="campo">
             <label for="jogo-genero">Gênero <abbr title="obrigatório">*</abbr></label>
             <select id="jogo-genero" name="genero" required>
               <option value="" selected disabled>Selecione</option>
@@ -108,7 +108,7 @@
             </select>
           </div>
 
-          <div>
+          <div class="campo">
             <label for="jogo-ano">Ano de lançamento <abbr title="obrigatório">*</abbr></label>
             <input type="number" id="jogo-ano" name="ano" min="1970" max="2100" step="1" required
                    placeholder="Ex.: 2015">
@@ -118,34 +118,34 @@
         <fieldset>
           <legend>Situação na coleção</legend>
 
-          <fieldset>
+          <fieldset class="opcoes">
             <legend>Status <abbr title="obrigatório">*</abbr></legend>
-            <div>
+            <div class="opcao">
               <input type="radio" id="status-quero-jogar" name="status" value="quero-jogar" checked required>
               <label for="status-quero-jogar">Quero jogar</label>
             </div>
-            <div>
+            <div class="opcao">
               <input type="radio" id="status-jogando" name="status" value="jogando">
               <label for="status-jogando">Jogando</label>
             </div>
-            <div>
+            <div class="opcao">
               <input type="radio" id="status-zerado" name="status" value="zerado">
               <label for="status-zerado">Zerado</label>
             </div>
-            <div>
+            <div class="opcao">
               <input type="radio" id="status-abandonado" name="status" value="abandonado">
               <label for="status-abandonado">Abandonado</label>
             </div>
           </fieldset>
 
-          <div>
+          <div class="campo">
             <label for="jogo-nota">Nota pessoal</label>
             <input type="number" id="jogo-nota" name="nota" min="0" max="10" step="0.5"
                    aria-describedby="ajuda-nota" placeholder="0 a 10">
             <small id="ajuda-nota">De 0 a 10. Deixe em branco se ainda não jogou.</small>
           </div>
 
-          <div>
+          <div class="campo">
             <label for="jogo-horas">Horas jogadas</label>
             <input type="number" id="jogo-horas" name="horas" min="0" step="0.5" placeholder="Ex.: 35">
           </div>
@@ -154,22 +154,25 @@
         <fieldset>
           <legend>Detalhes adicionais</legend>
 
-          <div>
+          <div class="campo">
             <label for="jogo-capa">URL da capa</label>
             <input type="url" id="jogo-capa" name="capa" placeholder="https://exemplo.com/capa.jpg">
           </div>
 
-          <div>
+          <div class="campo">
             <label for="jogo-observacoes">Observações</label>
             <textarea id="jogo-observacoes" name="observacoes" rows="4" maxlength="500"
                       placeholder="Anotações pessoais sobre o jogo"></textarea>
           </div>
         </fieldset>
 
-        <div>
-          <button type="submit">Salvar jogo</button>
-          <button type="reset">Limpar campos</button>
-          <a href="../index.html">Cancelar</a>
+        <p class="mensagem mensagem--erro" role="alert">Há campos com problema. Corrija os destacados em vermelho antes de salvar.</p>
+        <p class="mensagem mensagem--sucesso" role="status">Todos os campos obrigatórios estão preenchidos. Você já pode salvar.</p>
+
+        <div class="acoes">
+          <button type="submit" class="botao botao--primario">Salvar jogo</button>
+          <button type="reset" class="botao botao--secundario">Limpar campos</button>
+          <a class="botao botao--fantasma" href="../index.html">Cancelar</a>
         </div>
       </form>
     </section>
