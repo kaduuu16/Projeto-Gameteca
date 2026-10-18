@@ -31,8 +31,10 @@
 
   <main id="conteudo" class="pagina-colecao">
     <p class="aviso aviso--info" role="note">
-      <strong>Dados de exemplo.</strong>
-      Esta lista é fixa na Etapa 2. Cadastro, busca e filtros passam a funcionar na Etapa 3.
+      <span>
+        <strong>Dados de exemplo.</strong>
+        Esta lista é fixa na Etapa 2. Cadastro, busca e filtros passam a funcionar na Etapa 3.
+      </span>
     </p>
 
     <section class="area-busca" aria-labelledby="titulo-busca">
@@ -44,7 +46,7 @@
           <input type="search" id="busca-titulo" name="busca" placeholder="Ex.: The Witcher">
         </div>
 
-        <fieldset>
+        <fieldset class="grupo-filtros">
           <legend>Filtros</legend>
 
           <div class="campo">
@@ -88,7 +90,7 @@
           </div>
         </fieldset>
 
-        <fieldset>
+        <fieldset class="grupo-ordenacao">
           <legend>Ordenação</legend>
 
           <div class="campo">
