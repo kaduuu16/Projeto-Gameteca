@@ -392,4 +392,156 @@ body > footer p {
 }
 
 
+/* ==========================================================================
+   3. BOTÕES E ESTADOS DE INTERAÇÃO
+   Vale para <a> e <button> com a classe .botao. O botão "afunda" ao ser
+   clicado (a sombra some e ele se desloca), como um botão físico.
+   ========================================================================== */
+
+.botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--esp-2);
+  min-height: 2.75rem;       /* alvo de toque confortável */
+  padding: 0.5rem 1rem;
+  font: inherit;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  color: var(--tinta);
+  background-color: var(--papel);
+  border: var(--borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra-pequena);
+  transition: background-color 0.15s ease, color 0.15s ease,
+              transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.botao:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 0.1875rem 0.1875rem 0 var(--tinta);
+}
+
+.botao:active {
+  transform: translate(0.125rem, 0.125rem);
+  box-shadow: none;
+}
+
+.botao:disabled,
+.botao[aria-disabled="true"] {
+  cursor: not-allowed;
+  color: var(--tinta-suave);
+  background-color: var(--fundo);
+  border-color: var(--tinta-suave);
+  box-shadow: none;
+  transform: none;
+}
+
+/* Variações */
+.botao--primario {
+  color: var(--papel);
+  background-color: var(--violeta);
+}
+
+.botao--primario:hover {
+  color: var(--papel);
+  background-color: var(--violeta-escuro);
+}
+
+.botao--secundario:hover {
+  background-color: var(--fundo);
+}
+
+.botao--perigo {
+  color: var(--papel);
+  background-color: var(--perigo);
+}
+
+.botao--perigo:hover {
+  color: var(--papel);
+  background-color: var(--perigo-escuro);
+}
+
+.botao--fantasma {
+  background-color: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.botao--fantasma:hover {
+  color: var(--violeta-escuro);
+  background-color: transparent;
+  box-shadow: none;
+  transform: none;
+}
+
+.botao--pequeno {
+  min-height: 2.25rem;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.9375rem;
+}
+
+/* Grupo de botões: linha que quebra quando falta espaço */
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-3);
+  align-items: center;
+  margin: 0;
+}
+
+
+/* ---- Links da navegação principal: hover e página atual ------------------ */
+
+body > header nav a:hover {
+  color: var(--papel);
+  background-color: rgb(255 255 255 / 0.14);
+  border-color: rgb(255 255 255 / 0.45);
+}
+
+body > header nav a[aria-current="page"]:hover {
+  background-color: var(--violeta-escuro);
+  border-color: transparent;
+}
+
+
+/* ---- Foco visível (teclado) --------------------------------------------- */
+
+:focus-visible {
+  outline: 3px solid var(--violeta);
+  outline-offset: 3px;
+}
+
+/* Sobre o topo escuro o violeta perde contraste: usa âmbar */
+body > header :focus-visible {
+  outline-color: var(--ambar);
+}
+
+
+/* ---- Movimento reduzido -------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+
+  .botao:hover,
+  .botao:active {
+    transform: none;
+  }
+}
+
+
 /* === FIM (os próximos blocos são acrescentados acima desta linha) === */
