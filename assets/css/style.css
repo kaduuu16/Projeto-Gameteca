@@ -320,7 +320,7 @@ main {
 .painel,
 .area-busca,
 .area-resumo {
-  padding: var(--esp-5);
+  padding: var(--esp-4);
   background-color: var(--papel);
   border: var(--borda);
   border-radius: var(--raio);
@@ -466,6 +466,7 @@ body > footer p {
 }
 
 .botao--fantasma {
+  padding-inline: var(--esp-1);
   background-color: transparent;
   border-color: transparent;
   box-shadow: none;
@@ -492,6 +493,7 @@ body > footer p {
   flex-wrap: wrap;
   gap: var(--esp-3);
   align-items: center;
+  max-width: none;           /* algumas ações são <p>, que limitam a largura */
   margin: 0;
 }
 
@@ -538,7 +540,8 @@ body > header :focus-visible {
   }
 
   .botao:hover,
-  .botao:active {
+  .botao:active,
+  .jogo:hover {
     transform: none;
   }
 }
@@ -766,7 +769,7 @@ legend {
 /* Campo de busca com botão ao lado */
 .campo--com-botao {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--esp-2);
   align-items: end;
   margin-bottom: var(--esp-5);
@@ -1041,11 +1044,18 @@ legend {
   justify-self: start;       /* o selo não estica na célula do grid */
 }
 
+/* Ações em grade: "Ver detalhes" na linha de cima; "Editar" e "Excluir" dividem a de baixo */
 .jogo .acoes {
   grid-column: 2;
   align-self: end;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   padding: var(--esp-2) var(--esp-4) var(--esp-3);
   gap: var(--esp-2);
+}
+
+.jogo .acoes .botao--primario {
+  grid-column: 1 / -1;
 }
 
 .jogo .botao {
@@ -1148,7 +1158,7 @@ legend {
     "api"
     "acoes";
   gap: var(--esp-4) var(--esp-5);
-  padding: var(--esp-5);
+  padding: var(--esp-4);
   background-color: var(--papel);
   border: var(--borda);
   border-top: 0.75rem solid var(--faixa, var(--tinta));   /* lombada de status no topo */
@@ -1291,4 +1301,176 @@ dialog[open] {
 }
 
 
-/* === FIM (os próximos blocos são acrescentados acima desta linha) === */
+/* ==========================================================================
+   8. RESPONSIVIDADE (Media Queries, mobile-first)
+
+   Pontos de quebra (em, relativos ao tamanho da fonte do navegador):
+     30em  ≈ 480px   celulares grandes
+     40em  ≈ 640px   tablets em pé: cards verticais em grade
+     48em  ≈ 768px   tablets: navegação ao lado do título, ficha em 2 colunas
+     64em  ≈ 1024px  notebooks: resumo ao lado da lista
+     90em  ≈ 1440px  telas largas
+   ========================================================================== */
+
+/* ---- Telas pequenas (base): botões de ação ocupam a largura toda ---------- */
+
+.formulario .acoes .botao,
+dialog .acoes .botao {
+  flex: 1 1 100%;
+}
+
+
+/* ---- ≥ 30em: celulares grandes ------------------------------------------- */
+
+@media (min-width: 30em) {
+  .formulario .acoes .botao,
+  dialog .acoes .botao {
+    flex: 0 0 auto;
+  }
+
+  /* Campo de busca da API com o botão ao lado */
+  .campo--com-botao {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+}
+
+
+/* ---- ≥ 40em: cards verticais em grade, busca em áreas -------------------- */
+
+@media (min-width: 40em) {
+  .painel,
+  .area-busca,
+  .area-resumo,
+  .detalhe {
+    padding: var(--esp-5);
+  }
+
+  /* Busca: campo, filtros e, na última linha, ordenação com os botões */
+  .area-busca form {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "busca busca"
+      "filtros filtros"
+      "ordenacao acoes";
+  }
+
+  .area-busca .campo--busca {
+    grid-area: busca;
+  }
+
+  .area-busca .grupo-filtros {
+    grid-area: filtros;
+  }
+
+  .area-busca .grupo-ordenacao {
+    grid-area: ordenacao;
+  }
+
+  .area-busca .acoes {
+    grid-area: acoes;
+  }
+
+  /* Lista: tantas colunas de 15rem quanto couberem */
+  .lista-jogos {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+    gap: var(--esp-5);
+  }
+
+  /* Card vertical: capa em cima, dados embaixo, botões no rodapé */
+  .jogo {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto 1fr auto;
+  }
+
+  .jogo img {
+    grid-row: auto;
+    height: auto;
+    aspect-ratio: 3 / 4;
+    border-right: 0;
+    border-bottom: var(--borda);
+  }
+
+  .jogo h3,
+  .jogo dl,
+  .jogo .acoes {
+    grid-column: 1;
+  }
+
+  /* O selo de status passa a flutuar sobre a capa; o rótulo "Status" continua
+     disponível para leitores de tela */
+  .jogo .selo {
+    position: absolute;
+    top: var(--esp-3);
+    left: var(--esp-3);
+  }
+
+  .jogo dt:has(+ .selo) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+
+/* ---- ≥ 48em: navegação ao lado do título, ficha em duas colunas ---------- */
+
+@media (min-width: 48em) {
+  body > header nav {
+    flex: 0 0 auto;
+    margin-left: auto;
+  }
+
+  .detalhe {
+    grid-template-columns: 16rem minmax(0, 1fr);
+    grid-template-areas:
+      "topo  topo"
+      "capa  dados"
+      "capa  obs"
+      "capa  api"
+      "acoes acoes";
+    align-items: start;
+  }
+
+  /* Áreas "capa" e "dados" têm alturas diferentes: a capa não estica */
+  .detalhe > figure {
+    align-self: start;
+  }
+}
+
+
+/* ---- ≥ 64em: notebooks (lista à esquerda, resumo fixo à direita) --------- */
+
+@media (min-width: 64em) {
+  .pagina-colecao {
+    grid-template-columns: minmax(0, 1fr) 20rem;
+    grid-template-areas:
+      "aviso aviso"
+      "busca resumo"
+      "lista resumo";
+    align-items: start;
+  }
+
+  .area-resumo {
+    position: sticky;          /* acompanha a rolagem da lista */
+    top: var(--esp-4);
+  }
+}
+
+
+/* ---- ≥ 90em: telas largas ------------------------------------------------ */
+
+@media (min-width: 90em) {
+  :root {
+    --largura-max: 84rem;
+  }
+
+  body {
+    font-size: 1.125rem;
+  }
+}
+
+
+/* === FIM === */
