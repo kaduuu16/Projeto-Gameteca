@@ -78,3 +78,63 @@ function normalizarTexto(texto) {
     .toLowerCase()
     .trim();
 }
+
+
+/* ---- Avisos (mensagens de feedback) -------------------------------------- */
+
+const CHAVE_AVISO = 'gameteca:aviso';
+const TEMPO_DO_AVISO = 8000;        // milissegundos
+
+// Mostra uma mensagem flutuante no pé da tela. tipo: 'sucesso' ou 'erro'.
+function mostrarAviso(tipo, texto) {
+  const area = document.getElementById('avisos');
+
+  const aviso = document.createElement('div');
+  aviso.className = `mensagem mensagem--${tipo}`;
+  aviso.setAttribute('role', tipo === 'erro' ? 'alert' : 'status');
+
+  const conteudo = document.createElement('span');
+  conteudo.textContent = texto;
+
+  const fechar = document.createElement('button');
+  fechar.type = 'button';
+  fechar.className = 'aviso-fechar';
+  fechar.setAttribute('aria-label', 'Fechar aviso');
+  fechar.textContent = '\u00d7';
+  fechar.addEventListener('click', () => aviso.remove());
+
+  aviso.append(conteudo, fechar);
+  area.replaceChildren(aviso);      // um aviso por vez
+
+  // Avisos de sucesso somem sozinhos; os de erro ficam até serem fechados
+  if (tipo === 'sucesso') {
+    setTimeout(() => aviso.remove(), TEMPO_DO_AVISO);
+  }
+}
+
+// Guarda um aviso para aparecer na próxima página (usado antes de redirecionar,
+// por exemplo depois de salvar um jogo). Fica no sessionStorage só até ser mostrado.
+function guardarAvisoParaProximaPagina(tipo, texto) {
+  try {
+    sessionStorage.setItem(CHAVE_AVISO, JSON.stringify({ tipo: tipo, texto: texto }));
+  } catch (erro) {
+    // Sem sessionStorage, o aviso simplesmente não aparece
+  }
+}
+
+function mostrarAvisoPendente() {
+  try {
+    const guardado = sessionStorage.getItem(CHAVE_AVISO);
+    if (guardado === null) {
+      return;
+    }
+    sessionStorage.removeItem(CHAVE_AVISO);
+    const aviso = JSON.parse(guardado);
+    mostrarAviso(aviso.tipo, aviso.texto);
+  } catch (erro) {
+    // Aviso ilegível: ignora
+  }
+}
+
+// Toda página confere, ao abrir, se há um aviso esperando para ser mostrado
+document.addEventListener('DOMContentLoaded', mostrarAvisoPendente);

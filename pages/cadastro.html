@@ -10,6 +10,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&amp;family=Bricolage+Grotesque:opsz,wght@12..96,600..800&amp;display=swap">
   <link rel="stylesheet" href="../assets/css/style.css">
+  <script defer src="../assets/js/dados.js"></script>
+  <script defer src="../assets/js/interface.js"></script>
+  <script defer src="../assets/js/pagina-formulario.js"></script>
 </head>
 <body>
   <a class="pular-link" href="#conteudo">Ir para o conteúdo principal</a>
@@ -70,8 +73,12 @@
       <h2 id="titulo-form-jogo">Dados do jogo</h2>
       <p class="nota-obrigatorio">Os campos marcados com <abbr title="obrigatório">*</abbr> são obrigatórios.</p>
 
-      <form id="form-jogo" class="formulario" action="#" method="post">
-        <input type="hidden" id="jogo-id" name="id">
+      <noscript>
+        <p class="mensagem mensagem--erro">Para salvar jogos é preciso ativar o JavaScript no navegador.</p>
+      </noscript>
+
+      <!-- novalidate: a validação e as mensagens são feitas pelo JavaScript -->
+      <form id="form-jogo" class="formulario" novalidate>
 
         <fieldset>
           <legend>Identificação</legend>
@@ -169,8 +176,7 @@
           </div>
         </fieldset>
 
-        <p class="mensagem mensagem--erro" role="alert">Há campos com problema. Corrija os destacados em vermelho antes de salvar.</p>
-        <p class="mensagem mensagem--sucesso" role="status">Todos os campos obrigatórios estão preenchidos. Você já pode salvar.</p>
+        <p id="resumo-erros" class="mensagem mensagem--erro" role="alert" hidden></p>
 
         <div class="acoes">
           <button type="submit" class="botao botao--primario">Salvar jogo</button>
@@ -181,8 +187,11 @@
     </section>
   </main>
 
+  <!-- Área dos avisos de feedback, preenchida pelo JavaScript -->
+  <div id="avisos" class="avisos" aria-live="polite"></div>
+
   <footer>
-    <p>Minha Gameteca — Trabalho Prático Individual de Desenvolvimento Web (Etapa 2).</p>
+    <p>Minha Gameteca — Trabalho Prático Individual de Desenvolvimento Web (Etapa 3).</p>
     <p>
       Dados de jogos previstos via
       <a href="https://rawg.io/apidocs" target="_blank" rel="noopener noreferrer">RAWG Video Games Database API</a>.

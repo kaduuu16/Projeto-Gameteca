@@ -598,12 +598,25 @@ textarea:focus {
   outline-offset: 2px;
 }
 
-/* Só marca erro depois que a pessoa interagiu com o campo */
-input:user-invalid,
-select:user-invalid,
-textarea:user-invalid {
+/* Campo com erro: o JavaScript marca aria-invalid depois de validar */
+input[aria-invalid="true"],
+select[aria-invalid="true"],
+textarea[aria-invalid="true"] {
   border-color: var(--perigo);
   background-color: var(--perigo-fundo);
+}
+
+/* Mensagem de erro criada pelo JavaScript embaixo do campo */
+.erro-campo {
+  display: block;
+  margin-top: var(--esp-1);
+  font-weight: 700;
+  color: var(--perigo-texto);
+}
+
+.erro-campo::before {
+  content: "! ";             /* o erro não depende só da cor */
+  font-weight: 800;
 }
 
 input:disabled,
@@ -883,22 +896,63 @@ legend {
   margin: 0;
 }
 
-/*
-  Mensagens do formulário aparecem sozinhas, só com CSS:
-  - erro, quando algum campo foi tocado e está inválido;
-  - sucesso, quando todos os campos obrigatórios estão válidos.
-*/
+/* Resumo de erros do formulário (mostrado pelo JavaScript ao tentar salvar) */
 .formulario .mensagem {
-  display: none;
   margin-bottom: var(--esp-4);
 }
 
-.formulario:has(:user-invalid) .mensagem--erro {
-  display: flex;
+/* O erro do grupo de status ocupa a linha inteira, abaixo das opções */
+.opcoes .erro-campo {
+  flex-basis: 100%;
 }
 
-.formulario:valid .mensagem--sucesso {
+
+/* ---- Avisos flutuantes ("Jogo salvo", "Jogo excluído") ------------------- */
+
+.avisos {
+  position: fixed;
+  right: var(--esp-4);
+  bottom: var(--esp-4);
+  left: var(--esp-4);
+  z-index: 20;
   display: flex;
+  justify-content: center;
+  pointer-events: none;      /* a área vazia não bloqueia cliques na página */
+}
+
+.avisos .mensagem {
+  align-items: center;
+  width: min(100%, 34rem);
+  pointer-events: auto;
+  box-shadow: var(--sombra);
+  animation: aviso-entra 0.2s ease-out;
+}
+
+@keyframes aviso-entra {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+}
+
+.aviso-fechar {
+  flex: none;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-left: auto;
+  padding: 0;
+  font: inherit;
+  font-size: 1.375rem;
+  line-height: 1;
+  color: inherit;
+  cursor: pointer;
+  background-color: transparent;
+  border: 2px solid transparent;
+  border-radius: var(--raio);
+}
+
+.aviso-fechar:hover {
+  border-color: currentColor;
 }
 
 

@@ -182,6 +182,108 @@ function buscarJogoPorId(id) {
 }
 
 
+/* ---- Validação ----------------------------------------------------------- */
+
+const ANO_MINIMO = 1970;
+const ANO_MAXIMO = new Date().getFullYear() + 5;     // permite jogos já anunciados
+const TAMANHO_MAXIMO_DO_TITULO = 120;
+const TAMANHO_MAXIMO_DAS_OBSERVACOES = 500;
+
+function ehEnderecoWeb(texto) {
+  try {
+    const endereco = new URL(texto);
+    return endereco.protocol === 'http:' || endereco.protocol === 'https:';
+  } catch (erro) {
+    return false;
+  }
+}
+
+// Já existe outro jogo com o mesmo título na mesma plataforma?
+// "idIgnorado" é o id do próprio jogo quando ele está sendo editado.
+function existeJogoIgual(titulo, plataforma, idIgnorado) {
+  const procurado = titulo.trim().toLowerCase();
+
+  return listarJogos().some((jogo) => (
+    jogo.id !== idIgnorado
+    && jogo.plataforma === plataforma
+    && jogo.titulo.trim().toLowerCase() === procurado
+  ));
+}
+
+// Confere os dados de um jogo antes de salvar. Devolve um objeto com uma
+// mensagem para cada campo com problema; objeto vazio significa "tudo certo".
+function validarJogo(dados, idIgnorado) {
+  const erros = {};
+
+  if (dados.titulo.length < 2) {
+    erros.titulo = 'Informe o título do jogo (pelo menos 2 letras).';
+  } else if (dados.titulo.length > TAMANHO_MAXIMO_DO_TITULO) {
+    erros.titulo = `O título pode ter no máximo ${TAMANHO_MAXIMO_DO_TITULO} caracteres.`;
+  } else if (existeJogoIgual(dados.titulo, dados.plataforma, idIgnorado)) {
+    erros.titulo = 'Este jogo já está na sua coleção nesta plataforma.';
+  }
+
+  if (!Object.keys(PLATAFORMAS).includes(dados.plataforma)) {
+    erros.plataforma = 'Escolha a plataforma.';
+  }
+
+  if (!Object.keys(GENEROS).includes(dados.genero)) {
+    erros.genero = 'Escolha o gênero.';
+  }
+
+  if (!Number.isInteger(dados.ano) || dados.ano < ANO_MINIMO || dados.ano > ANO_MAXIMO) {
+    erros.ano = `Informe o ano com 4 dígitos, entre ${ANO_MINIMO} e ${ANO_MAXIMO}.`;
+  }
+
+  if (!Object.keys(STATUS).includes(dados.status)) {
+    erros.status = 'Escolha o status do jogo.';
+  }
+
+  if (dados.nota !== null && (Number.isNaN(dados.nota) || dados.nota < 0 || dados.nota > 10)) {
+    erros.nota = 'A nota vai de 0 a 10. Deixe em branco se ainda não jogou.';
+  }
+
+  if (dados.horas !== null && (Number.isNaN(dados.horas) || dados.horas < 0)) {
+    erros.horas = 'Informe as horas como um número igual ou maior que zero.';
+  }
+
+  if (dados.capa !== '' && !ehEnderecoWeb(dados.capa)) {
+    erros.capa = 'Informe o endereço completo da imagem, começando com http:// ou https://.';
+  }
+
+  if (dados.observacoes.length > TAMANHO_MAXIMO_DAS_OBSERVACOES) {
+    erros.observacoes = `As observações podem ter no máximo ${TAMANHO_MAXIMO_DAS_OBSERVACOES} caracteres.`;
+  }
+
+  return erros;
+}
+
+
+/* ---- Cadastro ------------------------------------------------------------ */
+
+// Acrescenta um jogo à coleção e grava. Devolve o jogo criado (já com id),
+// ou null se não foi possível gravar.
+function adicionarJogo(dados) {
+  const jogos = listarJogos();
+  const agora = new Date();
+
+  // O id é o momento da criação; o laço garante que nunca se repita
+  let id = agora.getTime();
+  while (jogos.some((jogo) => jogo.id === id)) {
+    id += 1;
+  }
+
+  const jogo = {
+    ...dados,
+    id: id,
+    criadoEm: agora.toISOString(),
+    atualizadoEm: agora.toISOString(),
+  };
+
+  jogos.push(jogo);
+  return salvarJogos(jogos) ? jogo : null;
+}
+
 /* ---- Resumo -------------------------------------------------------------- */
 
 // Calcula os números do "Resumo da coleção" a partir de uma lista de jogos
