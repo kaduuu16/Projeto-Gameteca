@@ -290,10 +290,6 @@ main {
 }
 
 /* Página da coleção: áreas nomeadas (o desktop reorganiza em Media Query) */
-.pagina-colecao > .aviso {
-  grid-area: aviso;
-}
-
 .area-busca {
   grid-area: busca;
 }
@@ -308,7 +304,6 @@ main {
 
 .pagina-colecao {
   grid-template-areas:
-    "aviso"
     "busca"
     "lista"
     "resumo";
@@ -870,8 +865,10 @@ legend {
 
 /* Lista vazia: convite para agir, não só um aviso */
 .mensagem--vazia {
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   padding: var(--esp-6) var(--esp-4);
+  text-align: center;
   color: var(--tinta-suave);
   background-color: var(--papel);
   border-style: dashed;
@@ -880,6 +877,10 @@ legend {
 
 .mensagem--vazia::before {
   display: none;
+}
+
+.mensagem--vazia p {
+  margin: 0;
 }
 
 /*
@@ -1447,7 +1448,6 @@ dialog .acoes .botao {
   .pagina-colecao {
     grid-template-columns: minmax(0, 1fr) 20rem;
     grid-template-areas:
-      "aviso aviso"
       "busca resumo"
       "lista resumo";
     align-items: start;
