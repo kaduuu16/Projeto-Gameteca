@@ -7,10 +7,31 @@
 
 /* ---- Elementos da página ------------------------------------------------- */
 
+const formBusca = document.getElementById('form-busca');
 const listaJogos = document.getElementById('lista-jogos');
 const modeloJogo = document.getElementById('modelo-jogo');
 const contador = document.getElementById('contador');
 const mensagemSemJogos = document.getElementById('mensagem-sem-jogos');
+const mensagemSemResultados = document.getElementById('mensagem-sem-resultados');
+
+
+/* ---- Pesquisa ------------------------------------------------------------ */
+
+// Lê o que a pessoa escolheu no formulário de busca
+function lerCriterios() {
+  const campos = formBusca.elements;
+  return {
+    termo: normalizarTexto(campos.busca.value),
+  };
+}
+
+// Mantém só os jogos cujo título contém o termo pesquisado
+function pesquisarJogos(jogos, termo) {
+  if (termo === '') {
+    return jogos;
+  }
+  return jogos.filter((jogo) => normalizarTexto(jogo.titulo).includes(termo));
+}
 
 
 /* ---- Listagem ------------------------------------------------------------ */
@@ -65,7 +86,8 @@ function textoDoContador(visiveis, total) {
 // Redesenha a lista inteira com os dados guardados no momento
 function atualizarLista() {
   const todos = listarJogos();
-  const visiveis = todos;
+  const criterios = lerCriterios();
+  const visiveis = pesquisarJogos(todos, criterios.termo);
 
   const cartoes = document.createDocumentFragment();
   for (const jogo of visiveis) {
@@ -77,9 +99,32 @@ function atualizarLista() {
   contador.hidden = colecaoVazia;
   contador.textContent = textoDoContador(visiveis.length, todos.length);
   mensagemSemJogos.hidden = !colecaoVazia;
+  mensagemSemResultados.hidden = colecaoVazia || visiveis.length > 0;
 }
+
+
+/* ---- Eventos ------------------------------------------------------------- */
+
+// A lista acompanha o que é digitado ou escolhido, sem precisar de botão
+formBusca.addEventListener('input', atualizarLista);
+
+// Enter no campo de pesquisa não deve recarregar a página
+formBusca.addEventListener('submit', (evento) => {
+  evento.preventDefault();
+  atualizarLista();
+});
+
+// O evento "reset" acontece antes de os campos serem limpos; por isso
+// a lista é redesenhada logo depois, com setTimeout
+formBusca.addEventListener('reset', () => {
+  setTimeout(atualizarLista);
+});
 
 
 /* ---- Início -------------------------------------------------------------- */
 
 atualizarLista();
+
+// Ao voltar para esta página pelo botão "voltar", o navegador pode restaurar
+// os campos da busca e uma cópia antiga da lista: redesenha com os dados atuais
+window.addEventListener('pageshow', atualizarLista);

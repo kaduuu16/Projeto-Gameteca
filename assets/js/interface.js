@@ -66,3 +66,15 @@ function formatarNota(nota) {
 function formatarHoras(horas) {
   return horas === null ? 'Não informado' : `${formatarNumero(horas)} h`;
 }
+
+
+/* ---- Texto --------------------------------------------------------------- */
+
+// Deixa o texto em minúsculas e sem acentos, para comparar "Açao" com "ação"
+function normalizarTexto(texto) {
+  return String(texto)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+}

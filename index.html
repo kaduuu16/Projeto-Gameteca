@@ -43,7 +43,7 @@
     <section class="area-busca" aria-labelledby="titulo-busca">
       <h2 id="titulo-busca">Pesquisar, filtrar e ordenar</h2>
 
-      <form id="form-busca" action="#" method="get" role="search" aria-label="Pesquisar, filtrar e ordenar jogos">
+      <form id="form-busca" role="search" aria-label="Pesquisar, filtrar e ordenar jogos">
         <div class="campo campo--busca">
           <label for="busca-titulo">Pesquisar por título</label>
           <input type="search" id="busca-titulo" name="busca" placeholder="Ex.: The Witcher">
@@ -116,8 +116,7 @@
         </fieldset>
 
         <div class="acoes">
-          <button type="submit" class="botao botao--primario">Aplicar</button>
-          <button type="reset" class="botao botao--secundario">Limpar</button>
+          <button type="reset" class="botao botao--secundario">Limpar pesquisa e filtros</button>
         </div>
       </form>
     </section>
@@ -129,6 +128,11 @@
       <div id="mensagem-sem-jogos" class="mensagem mensagem--vazia" hidden>
         <p>Sua coleção ainda não tem jogos.</p>
         <a class="botao botao--primario" href="pages/cadastro.html">Cadastrar o primeiro jogo</a>
+      </div>
+
+      <div id="mensagem-sem-resultados" class="mensagem mensagem--vazia" hidden>
+        <p>Nenhum jogo combina com essa pesquisa e esses filtros.</p>
+        <button type="reset" form="form-busca" class="botao botao--secundario">Limpar pesquisa e filtros</button>
       </div>
 
       <!-- Preenchida pelo JavaScript (pagina-colecao.js) a partir do localStorage -->
