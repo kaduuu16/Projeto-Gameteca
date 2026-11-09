@@ -158,21 +158,41 @@ document.addEventListener('DOMContentLoaded', mostrarAvisoPendente);
 
 /* ---- Confirmação de exclusão --------------------------------------------- */
 
+// Função a chamar se a pessoa confirmar a exclusão que está sendo perguntada
+let acaoAoConfirmarExclusao = null;
+
 // Abre o diálogo "Excluir jogo?" e só chama aoConfirmar() se a pessoa
 // escolher "Sim, excluir". Cancelar ou apertar Esc não faz nada.
 function pedirConfirmacaoDeExclusao(jogo, aoConfirmar) {
   const dialogo = document.getElementById('dialogo-exclusao');
 
   dialogo.querySelector('[data-campo="titulo-do-jogo"]').textContent = jogo.titulo;
-  dialogo.returnValue = '';
-
-  // O formulário do diálogo usa method="dialog": ao fechar, returnValue
-  // recebe o "value" do botão que foi clicado
-  dialogo.addEventListener('close', () => {
-    if (dialogo.returnValue === 'confirmar') {
-      aoConfirmar();
-    }
-  }, { once: true });
-
+  acaoAoConfirmarExclusao = aoConfirmar;
   dialogo.showModal();
 }
+
+// Os botões do diálogo ficam em um <form method="dialog">. O evento "submit"
+// acontece na hora do clique e informa qual botão foi usado (evento.submitter).
+function aoResponderDialogoDeExclusao(evento) {
+  evento.preventDefault();
+
+  const dialogo = evento.target.closest('dialog');
+  const confirmou = evento.submitter !== null && evento.submitter.value === 'confirmar';
+  const acao = acaoAoConfirmarExclusao;
+  acaoAoConfirmarExclusao = null;
+
+  // Fecha o diálogo antes de agir, para o foco poder voltar para a página
+  dialogo.close();
+
+  if (confirmou && acao !== null) {
+    acao();
+  }
+}
+
+// Só as páginas que têm o diálogo (coleção e detalhes) registram o ouvinte
+document.addEventListener('DOMContentLoaded', () => {
+  const dialogo = document.getElementById('dialogo-exclusao');
+  if (dialogo !== null) {
+    dialogo.querySelector('form').addEventListener('submit', aoResponderDialogoDeExclusao);
+  }
+});
