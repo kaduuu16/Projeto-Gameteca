@@ -13,6 +13,7 @@ const modeloJogo = document.getElementById('modelo-jogo');
 const contador = document.getElementById('contador');
 const mensagemSemJogos = document.getElementById('mensagem-sem-jogos');
 const mensagemSemResultados = document.getElementById('mensagem-sem-resultados');
+const areaResumo = document.getElementById('resumo');
 
 
 /* ---- Pesquisa e filtros -------------------------------------------------- */
@@ -162,6 +163,27 @@ function atualizarLista() {
   contador.textContent = textoDoContador(visiveis.length, todos.length);
   mensagemSemJogos.hidden = !colecaoVazia;
   mensagemSemResultados.hidden = colecaoVazia || visiveis.length > 0;
+
+  atualizarResumo(todos);
+}
+
+
+/* ---- Resumo -------------------------------------------------------------- */
+
+function escreverNoResumo(nome, texto) {
+  areaResumo.querySelector(`[data-resumo="${nome}"]`).textContent = texto;
+}
+
+// O resumo considera a coleção inteira, não só o que está filtrado na tela
+function atualizarResumo(jogos) {
+  const resumo = calcularResumo(jogos);
+
+  for (const status of Object.keys(STATUS)) {
+    escreverNoResumo(status, resumo.porStatus[status]);
+  }
+  escreverNoResumo('total', resumo.total);
+  escreverNoResumo('horas', `${formatarNumero(resumo.horas)} h`);
+  escreverNoResumo('nota-media', resumo.notaMedia === null ? 'sem notas' : formatarNumero(resumo.notaMedia));
 }
 
 

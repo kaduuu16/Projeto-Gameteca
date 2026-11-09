@@ -180,3 +180,42 @@ function buscarJogoPorId(id) {
   const jogo = listarJogos().find((item) => item.id === id);
   return jogo || null;
 }
+
+
+/* ---- Resumo -------------------------------------------------------------- */
+
+// Calcula os números do "Resumo da coleção" a partir de uma lista de jogos
+function calcularResumo(jogos) {
+  const resumo = {
+    total: jogos.length,
+    porStatus: {},
+    horas: 0,
+    notaMedia: null,       // null quando nenhum jogo tem nota
+  };
+
+  for (const status of Object.keys(STATUS)) {
+    resumo.porStatus[status] = 0;
+  }
+
+  let somaDasNotas = 0;
+  let jogosComNota = 0;
+
+  for (const jogo of jogos) {
+    if (resumo.porStatus[jogo.status] !== undefined) {
+      resumo.porStatus[jogo.status] += 1;
+    }
+    if (jogo.horas !== null) {
+      resumo.horas += jogo.horas;
+    }
+    if (jogo.nota !== null) {
+      somaDasNotas += jogo.nota;
+      jogosComNota += 1;
+    }
+  }
+
+  if (jogosComNota > 0) {
+    resumo.notaMedia = somaDasNotas / jogosComNota;
+  }
+
+  return resumo;
+}
