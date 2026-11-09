@@ -170,6 +170,21 @@ ol {
 }
 
 
+/* Textos digitados pela pessoa ou vindos da API podem ter "palavras" enormes:
+   quebram em qualquer ponto em vez de estourar a largura da tela */
+.jogo h3,
+.jogo dd,
+.detalhe h2,
+.detalhe dd,
+.nota-obrigatorio,
+.avisos .mensagem span,
+.estado-api,
+dialog p {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+
 /* ---- Links --------------------------------------------------------------- */
 
 a {
@@ -1057,6 +1072,8 @@ legend {
   background-color: var(--selo-fundo);
   border: 2px solid var(--faixa);
   border-radius: 999px;
+  overflow-wrap: normal;     /* o nome do status nunca quebra no meio */
+  white-space: nowrap;
 }
 
 
@@ -1106,7 +1123,9 @@ legend {
 .jogo {
   position: relative;
   display: grid;
-  grid-template-columns: 6.5rem minmax(0, 1fr);
+  /* A capa encolhe em telas muito estreitas (de 6.5rem até 4.5rem em 320px),
+     para sobrar espaço para os dados */
+  grid-template-columns: clamp(4.5rem, 100vw - 15.75rem, 6.5rem) minmax(0, 1fr);
   grid-template-rows: auto auto 1fr;
   overflow: hidden;
   background-color: var(--papel);
@@ -1156,8 +1175,21 @@ legend {
   font-weight: 700;
 }
 
+/* O selo ocupa a linha inteira do cartão; como ele já diz o status, o rótulo
+   "Status" fica só para leitores de tela */
 .jogo .selo {
+  grid-column: 1 / -1;
   justify-self: start;       /* o selo não estica na célula do grid */
+  margin-block: 0.125rem;
+}
+
+.jogo dt:has(+ .selo) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 /* Ações em grade: "Ver detalhes" na linha de cima; "Editar" e "Excluir" dividem a de baixo */
@@ -1362,7 +1394,7 @@ legend {
 /* Dados como ficha: rótulo à esquerda, valor em destaque à direita */
 .detalhe dl {
   display: grid;
-  grid-template-columns: minmax(7rem, max-content) minmax(0, 1fr);
+  grid-template-columns: fit-content(50%) minmax(0, 1fr);   /* rótulos ocupam no máximo metade */
   gap: var(--esp-2) var(--esp-4);
   margin: 0;
 }
@@ -1540,15 +1572,7 @@ dialog .acoes .botao {
     position: absolute;
     top: var(--esp-3);
     left: var(--esp-3);
-  }
-
-  .jogo dt:has(+ .selo) {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
+    margin-block: 0;
   }
 }
 
