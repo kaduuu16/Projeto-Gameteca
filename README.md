@@ -13,10 +13,13 @@ Projeto do Trabalho Prático Individual da disciplina de Desenvolvimento de Inte
 
 ## API pública
 
-[CheapShark API](https://apidocs.cheapshark.com/), que acompanha jogos e preços em lojas digitais de PC. Não exige cadastro nem chave. Ela é usada em duas funcionalidades:
+[CheapShark API](https://apidocs.cheapshark.com/), que acompanha jogos e preços em lojas digitais de PC. Não exige cadastro nem chave. Ela é usada em três funcionalidades:
 
-1. **No cadastro:** buscar um jogo pelo nome e preencher o formulário (título, capa e plataforma) com o resultado escolhido. O jogo salvo vai para o `localStorage`.
-2. **Nos detalhes:** mostrar o menor preço atual do jogo, o desconto, o menor preço já registrado e o link da oferta.
+1. **Busca no cadastro:** procurar um jogo pelo nome e preencher o formulário (título, capa e plataforma) com o resultado escolhido. O jogo salvo vai para o `localStorage`.
+2. **Capas:** ao cadastrar um jogo sem capa, a capa é buscada automaticamente pelo título; no cadastro e na edição, o botão "Buscar capa pelo título" faz o mesmo a qualquer momento.
+3. **Preços nos detalhes:** menor preço atual do jogo, desconto, menor preço já registrado e link da oferta.
+
+As capas são as imagens oficiais da Steam: a API informa o código do jogo na Steam e a aplicação monta o endereço da imagem. As imagens não ficam no repositório; o navegador as carrega direto da loja.
 
 > Na Entrega 0 a API indicada era a RAWG. Ela foi trocada pela CheapShark porque a RAWG exige uma chave pessoal, que ficaria exposta em um repositório público. O tema e a entidade não mudaram.
 
@@ -41,7 +44,8 @@ Projeto do Trabalho Prático Individual da disciplina de Desenvolvimento de Inte
 | Filtrar | Por plataforma, gênero e status, combináveis entre si e com a pesquisa. |
 | Ordenar | Por título, nota, ano ou horas jogadas, em ordem crescente ou decrescente. |
 | Persistência | Toda a coleção fica no `localStorage`, na chave `gameteca:jogos`, e é gravada de novo a cada cadastro, edição ou exclusão. |
-| API | Busca de jogos no cadastro e preços nos detalhes (CheapShark), com estados de carregando, sem resultados e erro. |
+| API | Busca de jogos no cadastro, capas automáticas e preços nos detalhes (CheapShark), com estados de carregando, sem resultados e erro. |
+| Capas | Ao salvar um jogo novo sem capa, a capa é procurada pelo título antes de gravar. O formulário mostra uma prévia da capa e tem o botão "Buscar capa pelo título". |
 
 **Regras de validação do jogo**
 
@@ -58,17 +62,19 @@ Projeto do Trabalho Prático Individual da disciplina de Desenvolvimento de Inte
 | --- | --- |
 | `dados.js` | Camada de dados: `localStorage`, jogos de exemplo, validação e as funções de cadastrar, buscar, editar, excluir e resumir. Não mexe na tela. |
 | `interface.js` | Funções de tela usadas por mais de uma página: endereços, capas, formatação, avisos e confirmação de exclusão. |
-| `api.js` | Requisições à CheapShark com `fetch`, tempo limite e conversão das respostas. |
+| `api.js` | Requisições à CheapShark com `fetch`, tempo limite, conversão das respostas e escolha da capa de um jogo. |
 | `pagina-colecao.js` | Página inicial: listagem, pesquisa, filtros, ordenação, resumo e exclusão. |
-| `pagina-formulario.js` | Cadastro e edição (o mesmo código atende os dois) e a busca na API. |
+| `pagina-formulario.js` | Cadastro e edição (o mesmo código atende os dois), busca na API, prévia e busca da capa. |
 | `pagina-detalhes.js` | Ficha do jogo, preços da API e exclusão. |
 
 Os arquivos são scripts comuns (sem módulos nem ferramentas de build), carregados com `defer` na ordem em que dependem uns dos outros.
 
 **Detalhes de comportamento**
 
-- Na primeira visita, a coleção começa com 5 jogos de exemplo. Uma coleção esvaziada pela pessoa continua vazia.
-- Jogos sem capa recebem uma capa provisória; se o endereço da capa falhar, entra uma imagem padrão.
+- Na primeira visita, a coleção começa com 5 jogos de exemplo, quatro deles com a capa oficial (o GTA VI ainda não está à venda para PC e fica com a capa provisória). Uma coleção esvaziada pela pessoa continua vazia.
+- A busca automática de capa só aceita o mesmo jogo (título idêntico, ou uma edição como "Remastered"), para nunca trazer a capa de outro jogo, de uma expansão ou de uma trilha sonora. Ela tenta, em ordem: capa vertical da Steam em alta resolução, capa vertical normal, imagem da página da loja e miniatura da API.
+- Se a API demorar mais de 8 segundos ou estiver fora do ar, o jogo é salvo sem capa, e o aviso explica que a capa não foi encontrada.
+- Jogos sem capa recebem uma capa provisória; se o endereço da capa falhar, entra uma imagem padrão. Capas horizontais aparecem inteiras, sobre fundo escuro, em vez de cortadas.
 - Todo texto digitado ou vindo da API é inserido com `textContent`, nunca como HTML.
 - Se a API estiver fora do ar, o cadastro manual e o restante da aplicação continuam funcionando.
 - A lista se atualiza quando a coleção é alterada em outra aba do navegador.
