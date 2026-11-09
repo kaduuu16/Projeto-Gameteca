@@ -149,3 +149,25 @@ function mostrarAvisoPendente() {
 
 // Toda página confere, ao abrir, se há um aviso esperando para ser mostrado
 document.addEventListener('DOMContentLoaded', mostrarAvisoPendente);
+
+
+/* ---- Confirmação de exclusão --------------------------------------------- */
+
+// Abre o diálogo "Excluir jogo?" e só chama aoConfirmar() se a pessoa
+// escolher "Sim, excluir". Cancelar ou apertar Esc não faz nada.
+function pedirConfirmacaoDeExclusao(jogo, aoConfirmar) {
+  const dialogo = document.getElementById('dialogo-exclusao');
+
+  dialogo.querySelector('[data-campo="titulo-do-jogo"]').textContent = jogo.titulo;
+  dialogo.returnValue = '';
+
+  // O formulário do diálogo usa method="dialog": ao fechar, returnValue
+  // recebe o "value" do botão que foi clicado
+  dialogo.addEventListener('close', () => {
+    if (dialogo.returnValue === 'confirmar') {
+      aoConfirmar();
+    }
+  }, { once: true });
+
+  dialogo.showModal();
+}

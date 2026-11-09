@@ -187,6 +187,35 @@ function atualizarResumo(jogos) {
 }
 
 
+/* ---- Exclusão ------------------------------------------------------------ */
+
+// Um único ouvinte na lista atende os botões "Excluir" de todos os cartões,
+// inclusive dos que forem criados depois (delegação de eventos)
+function aoClicarNaLista(evento) {
+  const botao = evento.target.closest('[data-acao="excluir"]');
+  if (botao === null) {
+    return;
+  }
+
+  const jogo = buscarJogoPorId(Number(botao.dataset.id));
+  if (jogo === null) {
+    atualizarLista();         // o jogo já tinha sido excluído em outra aba
+    return;
+  }
+
+  pedirConfirmacaoDeExclusao(jogo, () => {
+    if (excluirJogo(jogo.id) === null) {
+      mostrarAviso('erro', 'Não foi possível excluir o jogo. Recarregue a página e tente de novo.');
+      return;
+    }
+    atualizarLista();
+    mostrarAviso('sucesso', `“${jogo.titulo}” foi excluído da coleção.`);
+    // O botão clicado deixou de existir: leva o foco para o título da lista
+    document.getElementById('titulo-colecao').focus();
+  });
+}
+
+
 /* ---- Eventos ------------------------------------------------------------- */
 
 // A lista acompanha o que é digitado ou escolhido, sem precisar de botão
@@ -202,6 +231,15 @@ formBusca.addEventListener('submit', (evento) => {
 // a lista é redesenhada logo depois, com setTimeout
 formBusca.addEventListener('reset', () => {
   setTimeout(atualizarLista);
+});
+
+listaJogos.addEventListener('click', aoClicarNaLista);
+
+// Se a coleção mudar em outra aba do navegador, esta lista acompanha
+window.addEventListener('storage', (evento) => {
+  if (evento.key === CHAVE_JOGOS || evento.key === null) {
+    atualizarLista();
+  }
 });
 
 

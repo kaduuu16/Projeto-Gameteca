@@ -105,6 +105,21 @@
     </article>
   </main>
 
+  <!-- Confirmação de exclusão, aberta pelo JavaScript (interface.js) -->
+  <dialog id="dialogo-exclusao" aria-labelledby="dialogo-titulo">
+    <form method="dialog">
+      <h2 id="dialogo-titulo">Excluir jogo?</h2>
+      <p>
+        Tem certeza de que deseja excluir <strong data-campo="titulo-do-jogo"></strong>
+        da sua coleção? Esta ação não poderá ser desfeita.
+      </p>
+      <div class="acoes">
+        <button value="cancelar" class="botao botao--secundario">Cancelar</button>
+        <button value="confirmar" class="botao botao--perigo">Sim, excluir</button>
+      </div>
+    </form>
+  </dialog>
+
   <!-- Área dos avisos de feedback, preenchida pelo JavaScript -->
   <div id="avisos" class="avisos" aria-live="polite"></div>
 

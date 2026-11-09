@@ -308,6 +308,22 @@ function atualizarJogo(id, dados) {
   return salvarJogos(jogos) ? atualizado : null;
 }
 
+/* ---- Exclusão ------------------------------------------------------------ */
+
+// Remove um jogo da coleção e grava. Devolve o jogo removido,
+// ou null se ele não existia ou se não foi possível gravar.
+function excluirJogo(id) {
+  const jogos = listarJogos();
+  const removido = jogos.find((jogo) => jogo.id === id);
+
+  if (removido === undefined) {
+    return null;
+  }
+
+  const restantes = jogos.filter((jogo) => jogo.id !== id);
+  return salvarJogos(restantes) ? removido : null;
+}
+
 /* ---- Resumo -------------------------------------------------------------- */
 
 // Calcula os números do "Resumo da coleção" a partir de uma lista de jogos

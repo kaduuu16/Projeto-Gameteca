@@ -59,6 +59,18 @@ function mostrarJogo(jogo) {
   fichaDoJogo.hidden = false;
 }
 
+// Excluir pede confirmação; depois de excluir, volta para a coleção
+function aoClicarEmExcluir() {
+  pedirConfirmacaoDeExclusao(jogoAtual, () => {
+    if (excluirJogo(jogoAtual.id) === null) {
+      mostrarAviso('erro', 'Não foi possível excluir o jogo. Recarregue a página e tente de novo.');
+      return;
+    }
+    guardarAvisoParaProximaPagina('sucesso', `“${jogoAtual.titulo}” foi excluído da coleção.`);
+    location.href = `${RAIZ}index.html`;
+  });
+}
+
 function mostrarNaoEncontrado() {
   document.title = 'Jogo não encontrado — Minha Gameteca';
   painelNaoEncontrado.hidden = false;
@@ -73,4 +85,5 @@ if (jogoAtual === null) {
   mostrarNaoEncontrado();
 } else {
   mostrarJogo(jogoAtual);
+  document.getElementById('botao-excluir').addEventListener('click', aoClicarEmExcluir);
 }
