@@ -21,6 +21,17 @@ function urlDaPagina(pagina, id) {
   return id === undefined ? endereco : `${endereco}?id=${id}`;
 }
 
+// Lê o id do jogo no endereço da página atual (…/detalhes.html?id=3).
+// Devolve o número, ou null se o endereço não tiver um id válido.
+function idDaUrl() {
+  const texto = new URLSearchParams(location.search).get('id');
+  if (texto === null || texto.trim() === '') {
+    return null;
+  }
+  const id = Number(texto);
+  return Number.isInteger(id) ? id : null;
+}
+
 
 /* ---- Capas --------------------------------------------------------------- */
 

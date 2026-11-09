@@ -10,6 +10,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&amp;family=Bricolage+Grotesque:opsz,wght@12..96,600..800&amp;display=swap">
   <link rel="stylesheet" href="../assets/css/style.css">
+  <script defer src="../assets/js/dados.js"></script>
+  <script defer src="../assets/js/interface.js"></script>
+  <script defer src="../assets/js/pagina-detalhes.js"></script>
 </head>
 <body>
   <a class="pular-link" href="#conteudo">Ir para o conteúdo principal</a>
@@ -37,82 +40,76 @@
       </ol>
     </nav>
 
-    <article class="detalhe" aria-labelledby="detalhe-titulo" data-status="zerado">
+    <noscript>
+      <p class="mensagem mensagem--erro">Para ver os detalhes de um jogo é preciso ativar o JavaScript no navegador.</p>
+    </noscript>
+
+    <!-- Mostrado pelo JavaScript quando o endereço não tem um id válido ou o jogo foi excluído -->
+    <section id="nao-encontrado" class="painel" aria-labelledby="titulo-nao-encontrado" hidden>
+      <h2 id="titulo-nao-encontrado">Jogo não encontrado</h2>
+      <p>
+        Este jogo não está na coleção. Ele pode ter sido excluído, ou o endereço
+        da página está incompleto.
+      </p>
+      <p class="acoes">
+        <a class="botao botao--primario" href="../index.html">Voltar para a coleção</a>
+      </p>
+    </section>
+
+    <!-- Ficha do jogo: os campos com data-campo são preenchidos pelo JavaScript (pagina-detalhes.js) -->
+    <article id="detalhe" class="detalhe" aria-labelledby="detalhe-titulo" hidden>
       <header>
-        <h2 id="detalhe-titulo">The Witcher 3: Wild Hunt</h2>
-        <p>RPG · PC · 2015</p>
+        <h2 id="detalhe-titulo" data-campo="titulo"></h2>
+        <p data-campo="linha-resumo"></p>
       </header>
 
       <figure>
-        <img src="../assets/img/capa-1.svg"
-             alt="Capa provisória do jogo The Witcher 3: Wild Hunt"
-             width="225" height="300">
-        <figcaption>Capa provisória. A capa real virá da URL cadastrada ou da API RAWG.</figcaption>
+        <img id="detalhe-capa" alt="" width="225" height="300">
+        <figcaption data-campo="legenda-capa"></figcaption>
       </figure>
 
       <section class="bloco-dados" aria-labelledby="detalhe-dados">
         <h3 id="detalhe-dados">Dados na coleção</h3>
         <dl>
           <dt>Plataforma</dt>
-          <dd>PC</dd>
+          <dd data-campo="plataforma"></dd>
           <dt>Gênero</dt>
-          <dd>RPG</dd>
+          <dd data-campo="genero"></dd>
           <dt>Ano de lançamento</dt>
-          <dd>2015</dd>
+          <dd data-campo="ano"></dd>
           <dt>Status</dt>
-          <dd class="selo">Zerado</dd>
+          <dd class="selo" data-campo="status"></dd>
           <dt>Nota pessoal</dt>
-          <dd>10 / 10</dd>
+          <dd data-campo="nota"></dd>
           <dt>Horas jogadas</dt>
-          <dd>120 h</dd>
+          <dd data-campo="horas"></dd>
+          <dt>Adicionado em</dt>
+          <dd data-campo="criado-em"></dd>
+          <dt>Última alteração</dt>
+          <dd data-campo="atualizado-em"></dd>
         </dl>
       </section>
 
       <section class="bloco-observacoes" aria-labelledby="detalhe-observacoes">
         <h3 id="detalhe-observacoes">Observações</h3>
-        <p>
-          Joguei todas as missões principais e as duas expansões.
-          Quero rejogar com outro final.
-        </p>
-      </section>
-
-      <section class="bloco-api" aria-labelledby="detalhe-api">
-        <h3 id="detalhe-api">Informações da RAWG (exemplo)</h3>
-        <p>Nesta área serão exibidos dados complementares obtidos da API na Etapa 3.</p>
-        <ul>
-          <li>Desenvolvedora: CD Projekt Red</li>
-          <li>Data de lançamento: 19/05/2015</li>
-        </ul>
+        <p data-campo="observacoes"></p>
       </section>
 
       <footer>
         <p class="acoes">
           <a class="botao botao--fantasma" href="../index.html">Voltar para a coleção</a>
-          <a class="botao botao--primario" href="editar.html">Editar jogo</a>
-          <button type="button" class="botao botao--perigo" commandfor="dialogo-exclusao" command="show-modal">Excluir jogo</button>
+          <a class="botao botao--primario" id="link-editar" href="editar.html">Editar jogo</a>
+          <button type="button" class="botao botao--perigo" id="botao-excluir">Excluir jogo</button>
         </p>
       </footer>
     </article>
-
-    <!-- Confirmação de exclusão: abre pelo botão "Excluir jogo" (atributo command).
-         A exclusão em si será implementada com JavaScript na Etapa 3. -->
-    <dialog id="dialogo-exclusao" aria-labelledby="dialogo-titulo">
-      <form method="dialog">
-        <h2 id="dialogo-titulo">Excluir jogo?</h2>
-        <p>
-          Tem certeza de que deseja excluir <strong>The Witcher 3: Wild Hunt</strong>
-          da sua coleção? Esta ação não poderá ser desfeita.
-        </p>
-        <div class="acoes">
-          <button value="cancelar" class="botao botao--secundario">Cancelar</button>
-          <button value="confirmar" class="botao botao--perigo">Sim, excluir</button>
-        </div>
-      </form>
-    </dialog>
   </main>
 
+  <!-- Área dos avisos de feedback, preenchida pelo JavaScript -->
+  <div id="avisos" class="avisos" aria-live="polite"></div>
+
   <footer>
-    <p>Minha Gameteca — Trabalho Prático Individual de Desenvolvimento Web (Etapa 2).</p>
+    <p>Minha Gameteca — Trabalho Prático Individual de Desenvolvimento Web (Etapa 3).</p>
     <p>
       Dados de jogos previstos via
       <a href="https://rawg.io/apidocs" target="_blank" rel="noopener noreferrer">RAWG Video Games Database API</a>.

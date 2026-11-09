@@ -1278,6 +1278,17 @@ legend {
   color: var(--tinta-suave);
 }
 
+/* Jogos com capa própria não têm legenda */
+.detalhe figcaption:empty {
+  display: none;
+}
+
+/* As observações respeitam as quebras de linha digitadas */
+.bloco-observacoes p {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
 .detalhe section {
   padding-top: var(--esp-3);
   border-top: 2px solid var(--fundo);
