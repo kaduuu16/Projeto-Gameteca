@@ -1,5 +1,7 @@
 /*
-  Minha Gameteca — Etapa 2 (CSS, layout e responsividade)
+  Minha Gameteca — folha de estilos
+  Criada na Etapa 2 (CSS, layout e responsividade) e ampliada na Etapa 3 com
+  os componentes usados pelo JavaScript (avisos, erros de campo, estados da API).
 
   Organização deste arquivo:
     1. Identidade visual (tokens, Box Model, tipografia, links)
@@ -39,11 +41,9 @@
   --perigo-fundo: #FFE8EC;
   --perigo-texto: #8B1428;
 
-  /* Sucesso e informação */
+  /* Sucesso */
   --sucesso-fundo: #DDF4E4;
   --sucesso-texto: #0F5A2A;
-  --info-fundo: #E3EEFF;
-  --info-texto: #0B3F85;
 
   /* Cores de status do jogo: faixa, fundo do selo e texto do selo */
   --quero-jogar-faixa: #1B6FD1;
@@ -622,6 +622,12 @@ textarea[aria-invalid="true"] {
   background-color: var(--perigo-fundo);
 }
 
+/* O rótulo do campo com erro também muda de cor */
+.campo--invalido > label,
+.campo--invalido > legend {
+  color: var(--perigo-texto);
+}
+
 /* Mensagem de erro criada pelo JavaScript embaixo do campo */
 .erro-campo {
   display: block;
@@ -892,8 +898,7 @@ legend {
    5. MENSAGENS E AVISOS
    ========================================================================== */
 
-.mensagem,
-.aviso {
+.mensagem {
   display: flex;
   gap: var(--esp-3);
   align-items: flex-start;
@@ -905,8 +910,7 @@ legend {
 }
 
 /* Ícone textual de cada tipo de mensagem */
-.mensagem::before,
-.aviso::before {
+.mensagem::before {
   display: grid;
   flex: none;
   place-items: center;
@@ -939,17 +943,6 @@ legend {
 .mensagem--sucesso::before {
   content: "\2713";
   background-color: var(--zerado-faixa);
-}
-
-.aviso--info {
-  color: var(--info-texto);
-  background-color: var(--info-fundo);
-  border-color: var(--quero-jogar-faixa);
-}
-
-.aviso--info::before {
-  content: "i";
-  background-color: var(--quero-jogar-faixa);
 }
 
 /* Lista vazia: convite para agir, não só um aviso */
