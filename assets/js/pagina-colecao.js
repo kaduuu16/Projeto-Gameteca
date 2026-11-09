@@ -28,6 +28,8 @@ function lerCriterios() {
     plataforma: campos.plataforma.value,
     genero: campos.genero.value,
     status: campos.status.value,
+    ordenarPor: campos['ordenar-por'].value,
+    ordem: campos.ordem.value,
   };
 }
 
@@ -49,6 +51,45 @@ function filtrarJogos(jogos, criterios) {
       }
     }
     return true;
+  });
+}
+
+
+/* ---- Ordenação ----------------------------------------------------------- */
+
+function compararTitulos(a, b) {
+  return a.titulo.localeCompare(b.titulo, 'pt-BR', { sensitivity: 'base' });
+}
+
+// Devolve uma cópia ordenada da lista (não altera o array recebido).
+// ordenarPor: 'titulo', 'nota', 'ano' ou 'horas'; ordem: 'crescente' ou 'decrescente'.
+function ordenarJogos(jogos, ordenarPor, ordem) {
+  const sentido = ordem === 'decrescente' ? -1 : 1;
+
+  return [...jogos].sort((a, b) => {
+    if (ordenarPor === 'titulo') {
+      return sentido * compararTitulos(a, b);
+    }
+
+    const valorA = a[ordenarPor];
+    const valorB = b[ordenarPor];
+
+    // Jogos sem valor (por exemplo, ainda sem nota) ficam sempre no fim
+    if (valorA === null && valorB === null) {
+      return compararTitulos(a, b);
+    }
+    if (valorA === null) {
+      return 1;
+    }
+    if (valorB === null) {
+      return -1;
+    }
+
+    // Em caso de empate, desempata pelo título
+    if (valorA === valorB) {
+      return compararTitulos(a, b);
+    }
+    return sentido * (valorA - valorB);
   });
 }
 
@@ -108,6 +149,7 @@ function atualizarLista() {
   const criterios = lerCriterios();
   let visiveis = pesquisarJogos(todos, criterios.termo);
   visiveis = filtrarJogos(visiveis, criterios);
+  visiveis = ordenarJogos(visiveis, criterios.ordenarPor, criterios.ordem);
 
   const cartoes = document.createDocumentFragment();
   for (const jogo of visiveis) {
