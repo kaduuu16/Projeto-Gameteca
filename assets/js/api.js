@@ -8,8 +8,13 @@
     GET /games?title=…   procura jogos pelo nome
     GET /games?id=…      ofertas atuais e menor preço já registrado de um jogo
 
+  As capas vêm da Steam: a API informa o código do jogo na Steam (steamAppID),
+  e a partir dele monta-se o endereço das imagens oficiais da loja.
+
   Os dados externos vêm da API; o que a pessoa decide guardar na coleção
   fica no localStorage (dados.js).
+
+  Depende de interface.js (normalizarTexto), que deve ser carregado antes.
 */
 
 'use strict';
@@ -47,10 +52,7 @@ function converterResultado(item) {
     idCheapShark: String(item.gameID),
     titulo: String(item.external || ''),
     miniatura: String(item.thumb || ''),
-    // Jogos vendidos na Steam têm uma capa em formato retrato neste endereço
-    capaRetrato: item.steamAppID
-      ? `https://cdn.cloudflare.steamstatic.com/steam/apps/${encodeURIComponent(item.steamAppID)}/library_600x900.jpg`
-      : '',
+    steamAppID: item.steamAppID ? String(item.steamAppID) : '',
     menorPreco: Number(item.cheapest),
   };
 }
@@ -63,6 +65,108 @@ async function buscarJogosNaApi(termo) {
     throw new Error('A API devolveu uma resposta em formato inesperado.');
   }
   return dados.map(converterResultado);
+}
+
+
+/* ---- Capas --------------------------------------------------------------- */
+
+const TEMPO_LIMITE_DA_IMAGEM = 4000;      // milissegundos
+
+// Edições que contam como "o mesmo jogo" ao procurar a capa
+// (ex.: "The Witcher 3: Wild Hunt Remastered" para "The Witcher 3: Wild Hunt")
+const EDICOES_DO_MESMO_JOGO = [
+  'remastered', 'complete edition', 'definitive edition', 'deluxe edition',
+  'enhanced edition', 'standard edition', 'gold edition', 'ultimate edition',
+  'game of the year edition', 'goty edition',
+];
+
+// Título reduzido ao essencial para comparar: sem acentos, maiúsculas e pontuação.
+// Ex.: "The Witcher 3: Wild Hunt" → "the witcher 3 wild hunt"
+function chaveDoTitulo(titulo) {
+  return normalizarTexto(titulo).replace(/[^a-z0-9]+/g, ' ').trim();
+}
+
+function ehEdicaoDoMesmoJogo(tituloDoResultado, chaveProcurada) {
+  const chave = chaveDoTitulo(tituloDoResultado);
+  if (!chave.startsWith(`${chaveProcurada} `)) {
+    return false;
+  }
+  return EDICOES_DO_MESMO_JOGO.includes(chave.slice(chaveProcurada.length + 1));
+}
+
+// Endereços de capa possíveis para um resultado, do melhor para o pior:
+// capa vertical da Steam em alta resolução, capa vertical normal, imagem
+// horizontal da página da loja e, por último, a miniatura enviada pela API.
+function enderecosDeCapa(resultado) {
+  const enderecos = [];
+
+  if (resultado.steamAppID !== '') {
+    const id = encodeURIComponent(resultado.steamAppID);
+    enderecos.push(`https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${id}/library_600x900_2x.jpg`);
+    enderecos.push(`https://cdn.cloudflare.steamstatic.com/steam/apps/${id}/library_600x900.jpg`);
+    enderecos.push(`https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${id}/header.jpg`);
+  }
+  if (resultado.miniatura !== '') {
+    enderecos.push(resultado.miniatura);
+  }
+  return enderecos;
+}
+
+// Testa, sem mostrar na tela, se uma imagem existe e carrega
+function imagemCarrega(endereco) {
+  return new Promise((resolver) => {
+    const imagem = new Image();
+    const temporizador = setTimeout(() => resolver(false), TEMPO_LIMITE_DA_IMAGEM);
+
+    imagem.addEventListener('load', () => {
+      clearTimeout(temporizador);
+      resolver(imagem.naturalWidth > 0);
+    });
+    imagem.addEventListener('error', () => {
+      clearTimeout(temporizador);
+      resolver(false);
+    });
+    imagem.src = endereco;
+  });
+}
+
+// Devolve o primeiro endereço de capa que carrega, ou '' se nenhum carregar
+async function escolherCapa(resultado) {
+  for (const endereco of enderecosDeCapa(resultado)) {
+    if (await imagemCarrega(endereco)) {
+      return endereco;
+    }
+  }
+  return '';
+}
+
+// Procura a capa de um jogo pelo título. Só aceita o mesmo jogo (título igual,
+// ou uma edição dele), para nunca trazer a capa de outro jogo, de uma trilha
+// sonora ou de uma expansão. Devolve { capa, idCheapShark } ou null.
+async function buscarCapaPorTitulo(titulo) {
+  const procurado = chaveDoTitulo(titulo);
+  if (procurado === '') {
+    return null;
+  }
+
+  const resultados = await buscarJogosNaApi(titulo);
+  const iguais = resultados.filter((resultado) => chaveDoTitulo(resultado.titulo) === procurado);
+  const igualNaSteam = iguais.find((resultado) => resultado.steamAppID !== '');
+  const edicaoNaSteam = resultados.find((resultado) => (
+    resultado.steamAppID !== '' && ehEdicaoDoMesmoJogo(resultado.titulo, procurado)
+  ));
+
+  // Para a capa, prefere o resultado que está na Steam (imagens melhores);
+  // para o código do jogo (usado nos preços), prefere o título idêntico
+  const fonteDaCapa = igualNaSteam || edicaoNaSteam || iguais[0];
+  if (fonteDaCapa === undefined) {
+    return null;
+  }
+
+  return {
+    capa: await escolherCapa(fonteDaCapa),
+    idCheapShark: (iguais[0] || fonteDaCapa).idCheapShark,
+  };
 }
 
 
