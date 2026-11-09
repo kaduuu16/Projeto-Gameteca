@@ -49,6 +49,14 @@ function urlDaCapa(jogo) {
   return `${RAIZ}assets/img/capa-${numero}.svg`;
 }
 
+// Algumas lojas só têm imagem horizontal. Quando a imagem carrega, marca o
+// formato para o CSS mostrar a imagem inteira em vez de cortar as laterais.
+function marcarFormatoDaCapa(imagem) {
+  imagem.addEventListener('load', () => {
+    imagem.classList.toggle('capa--paisagem', imagem.naturalWidth > imagem.naturalHeight);
+  });
+}
+
 // Coloca a capa do jogo em um <img>. Se o endereço da imagem falhar,
 // troca pela capa padrão em vez de deixar a imagem quebrada.
 function aplicarCapa(imagem, jogo) {
@@ -59,6 +67,7 @@ function aplicarCapa(imagem, jogo) {
   imagem.addEventListener('error', () => {
     imagem.src = CAPA_PADRAO;
   }, { once: true });
+  marcarFormatoDaCapa(imagem);
 
   imagem.src = urlDaCapa(jogo);
 }

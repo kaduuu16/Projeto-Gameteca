@@ -60,7 +60,9 @@ const STATUS = {
   'abandonado': 'Abandonado',
 };
 
-// Coleção inicial, gravada só na primeira visita, para a aplicação não começar vazia
+// Coleção inicial, gravada só na primeira visita, para a aplicação não começar vazia.
+// As capas são as imagens oficiais da Steam (o mesmo endereço que a busca na API
+// encontra). O GTA VI ainda não está à venda para PC, então fica com a capa provisória.
 const JOGOS_DE_EXEMPLO = [
   {
     id: 1,
@@ -71,8 +73,9 @@ const JOGOS_DE_EXEMPLO = [
     status: 'zerado',
     nota: 10,
     horas: 120,
-    capa: '',
+    capa: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/292030/library_600x900_2x.jpg',
     observacoes: 'Joguei todas as missões principais e as duas expansões. Quero rejogar com outro final.',
+    idCheapShark: '112330',
     criadoEm: '2026-09-20T12:00:00.000Z',
     atualizadoEm: '2026-09-20T12:00:00.000Z',
   },
@@ -85,8 +88,9 @@ const JOGOS_DE_EXEMPLO = [
     status: 'jogando',
     nota: 9,
     horas: 25,
-    capa: '',
+    capa: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/367520/library_600x900_2x.jpg',
     observacoes: 'Parei na Cidade das Lágrimas. Falta encontrar o resto dos amuletos.',
+    idCheapShark: '165363',
     criadoEm: '2026-09-21T12:00:00.000Z',
     atualizadoEm: '2026-09-21T12:00:00.000Z',
   },
@@ -99,8 +103,9 @@ const JOGOS_DE_EXEMPLO = [
     status: 'zerado',
     nota: 9,
     horas: 18,
-    capa: '',
+    capa: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/504230/library_600x900_2x.jpg',
     observacoes: 'Terminei a história. Os lados B ficam para depois.',
+    idCheapShark: '177485',
     criadoEm: '2026-09-22T12:00:00.000Z',
     atualizadoEm: '2026-09-22T12:00:00.000Z',
   },
@@ -113,8 +118,9 @@ const JOGOS_DE_EXEMPLO = [
     status: 'abandonado',
     nota: 7,
     horas: 12,
-    capa: '',
+    capa: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1551360/library_600x900_2x.jpg',
     observacoes: '',
+    idCheapShark: '233750',
     criadoEm: '2026-09-23T12:00:00.000Z',
     atualizadoEm: '2026-09-23T12:00:00.000Z',
   },
@@ -129,6 +135,7 @@ const JOGOS_DE_EXEMPLO = [
     horas: null,
     capa: '',
     observacoes: 'Esperando o lançamento.',
+    idCheapShark: null,
     criadoEm: '2026-09-24T12:00:00.000Z',
     atualizadoEm: '2026-09-24T12:00:00.000Z',
   },

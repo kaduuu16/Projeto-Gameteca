@@ -1364,6 +1364,16 @@ legend {
   color: var(--tinta-suave);
 }
 
+/* Capa horizontal (algumas lojas só têm esse formato): a imagem aparece
+   inteira, centralizada sobre fundo escuro, em vez de ter as laterais cortadas.
+   A classe é colocada pelo JavaScript quando a imagem carrega. */
+.jogo img.capa--paisagem,
+.detalhe figure img.capa--paisagem,
+.capa-previa.capa--paisagem {
+  object-fit: contain;
+  background-color: var(--tinta);
+}
+
 /* Jogos com capa própria não têm legenda */
 .detalhe figcaption:empty {
   display: none;
