@@ -860,6 +860,41 @@ legend {
   color: var(--tinta-suave);
 }
 
+/* Campo da capa: prévia ao lado do endereço e do botão de busca */
+.capa-editor {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr);
+  gap: var(--esp-3);
+  align-items: start;
+}
+
+.capa-previa {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  background-color: var(--fundo);
+  border: var(--borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra-pequena);
+}
+
+.capa-controles {
+  display: grid;
+  gap: var(--esp-2);
+  justify-items: start;
+  min-width: 0;
+}
+
+.capa-controles input {
+  justify-self: stretch;
+}
+
+.capa-controles .estado-api,
+.capa-controles .ajuda {
+  margin: 0;
+}
+
 /* Situação de uma consulta à API: carregando, resultado, vazio ou erro */
 .estado-api {
   display: flex;
@@ -1504,6 +1539,12 @@ dialog .acoes .botao {
   /* Campo de busca da API com o botão ao lado */
   .campo--com-botao {
     grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  /* Prévia da capa um pouco maior */
+  .capa-editor {
+    grid-template-columns: 6rem minmax(0, 1fr);
+    gap: var(--esp-4);
   }
 }
 

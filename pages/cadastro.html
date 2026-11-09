@@ -73,7 +73,8 @@
 
       <!-- novalidate: a validação e as mensagens são feitas pelo JavaScript -->
       <form id="form-jogo" class="formulario" data-modo="cadastro" novalidate>
-        <!-- Preenchido quando o jogo é escolhido na busca da API -->
+        <!-- Código do jogo na API CheapShark: preenchido quando o jogo é escolhido
+             na busca ou quando a capa é encontrada pelo título -->
         <input type="hidden" name="idCheapShark">
 
 
@@ -163,7 +164,17 @@
 
           <div class="campo">
             <label for="jogo-capa">URL da capa</label>
-            <input type="url" id="jogo-capa" name="capa" placeholder="https://exemplo.com/capa.jpg">
+            <div class="capa-editor">
+              <!-- Prévia atualizada pelo JavaScript conforme o endereço digitado -->
+              <img id="previa-capa" class="capa-previa" src="../assets/img/capa-padrao.svg" alt="Prévia da capa" width="96" height="128">
+              <div class="capa-controles">
+                <input type="url" id="jogo-capa" name="capa" placeholder="https://exemplo.com/capa.jpg"
+                       aria-describedby="jogo-ajuda-capa">
+                <button type="button" id="botao-buscar-capa" class="botao botao--secundario botao--pequeno">Buscar capa pelo título</button>
+                <p id="estado-capa" class="estado-api" role="status" hidden></p>
+                <small class="ajuda" id="jogo-ajuda-capa">Se ficar em branco, buscamos a capa pelo título automaticamente ao salvar.</small>
+              </div>
+            </div>
           </div>
 
           <div class="campo">

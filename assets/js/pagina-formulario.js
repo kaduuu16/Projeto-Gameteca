@@ -22,6 +22,12 @@ const CAMPOS_DO_JOGO = ['titulo', 'plataforma', 'genero', 'ano', 'status', 'nota
 // tentativa de salvar, para não acusar erro em quem ainda está preenchendo
 let jaTentouSalvar = false;
 
+// Evita salvar duas vezes enquanto a capa está sendo buscada
+let salvando = false;
+
+// Tempo máximo que o cadastro espera pela capa antes de salvar sem ela
+const TEMPO_MAXIMO_DA_CAPA_AO_SALVAR = 8000;      // milissegundos
+
 
 /* ---- Leitura dos campos -------------------------------------------------- */
 
@@ -144,8 +150,59 @@ function focarCampo(nome) {
 
 /* ---- Salvar -------------------------------------------------------------- */
 
-function aoSalvar(evento) {
+// Devolve o resultado da promessa, ou null se ela demorar mais que "ms"
+function comLimiteDeTempo(promessa, ms) {
+  const tempoEsgotado = new Promise((resolver) => setTimeout(() => resolver(null), ms));
+  return Promise.race([promessa, tempoEsgotado]);
+}
+
+// Cadastro sem capa: procura a capa pelo título antes de salvar.
+// Completa "dados" quando encontra e devolve true; devolve false se não achar.
+// Se a API falhar ou demorar, o jogo é salvo do mesmo jeito, sem capa.
+async function completarCapaAutomaticamente(dados) {
+  const botaoSalvar = formJogo.querySelector('button[type="submit"]');
+  const textoDoBotao = botaoSalvar.textContent;
+  botaoSalvar.disabled = true;
+  botaoSalvar.textContent = 'Buscando a capa…';
+  mostrarEstadoDaCapa('carregando', `Buscando a capa de “${dados.titulo}” antes de salvar…`);
+
+  try {
+    const achado = await comLimiteDeTempo(buscarCapaPorTitulo(dados.titulo), TEMPO_MAXIMO_DA_CAPA_AO_SALVAR);
+    if (achado === null) {
+      return false;
+    }
+    if (!dados.idCheapShark) {
+      dados.idCheapShark = achado.idCheapShark;
+    }
+    if (achado.capa === '') {
+      return false;
+    }
+    dados.capa = achado.capa;
+    return true;
+  } catch (erro) {
+    console.warn('Não foi possível buscar a capa automaticamente.', erro);
+    return false;
+  } finally {
+    botaoSalvar.disabled = false;
+    botaoSalvar.textContent = textoDoBotao;
+  }
+}
+
+function textoDoCadastro(titulo, capaEncontrada) {
+  if (capaEncontrada === true) {
+    return `“${titulo}” foi adicionado à coleção, com a capa encontrada na internet.`;
+  }
+  if (capaEncontrada === false) {
+    return `“${titulo}” foi adicionado à coleção. Não encontramos a capa; você pode informar uma na edição do jogo.`;
+  }
+  return `“${titulo}” foi adicionado à coleção.`;
+}
+
+async function aoSalvar(evento) {
   evento.preventDefault();
+  if (salvando) {
+    return;
+  }
   jaTentouSalvar = true;
 
   const dados = lerFormulario();
@@ -165,14 +222,18 @@ function aoSalvar(evento) {
     return;
   }
   resumoDeErros.hidden = true;
+  salvando = true;
 
-  // Se o título mudou na edição, o vínculo com o jogo da API deixa de valer
-  if (modoEdicao && dados.titulo !== jogoEmEdicao.titulo) {
-    dados.idCheapShark = null;
+  // null: não precisou buscar; true/false: buscou e achou ou não a capa
+  let capaEncontrada = null;
+  if (!modoEdicao && dados.capa === '') {
+    capaEncontrada = await completarCapaAutomaticamente(dados);
   }
 
   const jogo = modoEdicao ? atualizarJogo(jogoEmEdicao.id, dados) : adicionarJogo(dados);
   if (jogo === null) {
+    salvando = false;
+    estadoDaCapa.hidden = true;
     mostrarAviso('erro', modoEdicao
       ? 'Não foi possível salvar. O jogo pode ter sido excluído em outra aba, ou o navegador bloqueou o armazenamento de dados.'
       : 'Não foi possível guardar o jogo neste navegador. Verifique se o armazenamento de dados do site está liberado.');
@@ -184,7 +245,7 @@ function aoSalvar(evento) {
     guardarAvisoParaProximaPagina('sucesso', `As alterações em “${jogo.titulo}” foram salvas.`);
     location.href = urlDaPagina('detalhes', jogo.id);
   } else {
-    guardarAvisoParaProximaPagina('sucesso', `“${jogo.titulo}” foi adicionado à coleção.`);
+    guardarAvisoParaProximaPagina('sucesso', textoDoCadastro(jogo.titulo, capaEncontrada));
     location.href = `${RAIZ}index.html`;
   }
 }
@@ -232,12 +293,99 @@ function iniciarEdicao() {
   }
 
   preencherFormulario(jogoEmEdicao);
+  formJogo.elements.idCheapShark.value = jogoEmEdicao.idCheapShark || '';
+  atualizarPreviaDaCapa();
 
   const enderecoDosDetalhes = urlDaPagina('detalhes', jogoEmEdicao.id);
   document.getElementById('titulo-atual').textContent = jogoEmEdicao.titulo;
   document.getElementById('trilha-detalhes').href = enderecoDosDetalhes;
   document.getElementById('link-cancelar').href = enderecoDosDetalhes;
   document.title = `Editar ${jogoEmEdicao.titulo} — Minha Gameteca`;
+}
+
+
+/* ---- Capa: prévia e busca pelo título ------------------------------------ */
+
+const previaDaCapa = document.getElementById('previa-capa');
+const estadoDaCapa = document.getElementById('estado-capa');
+const botaoBuscarCapa = document.getElementById('botao-buscar-capa');
+let temporizadorDaPrevia = null;
+
+// estado: 'carregando', 'ok', 'vazio' ou 'erro' (o CSS muda a aparência)
+function mostrarEstadoDaCapa(estado, texto) {
+  estadoDaCapa.dataset.estado = estado;
+  estadoDaCapa.textContent = texto;
+  estadoDaCapa.hidden = false;
+}
+
+// Mostra na prévia a imagem do endereço digitado. Sem endereço válido,
+// mostra a capa provisória que o jogo vai receber.
+function atualizarPreviaDaCapa() {
+  const endereco = formJogo.elements.capa.value.trim();
+
+  if (ehEnderecoWeb(endereco)) {
+    previaDaCapa.src = endereco;
+  } else if (jogoEmEdicao !== null) {
+    previaDaCapa.src = urlDaCapa({ ...jogoEmEdicao, capa: '' });
+  } else {
+    previaDaCapa.src = CAPA_PADRAO;
+  }
+}
+
+// O endereço digitado não abriu uma imagem: avisa e volta para a capa padrão
+function aoFalharPrevia() {
+  const endereco = formJogo.elements.capa.value.trim();
+  if (previaDaCapa.src === CAPA_PADRAO) {
+    return;
+  }
+  previaDaCapa.src = CAPA_PADRAO;
+  if (endereco !== '') {
+    mostrarEstadoDaCapa('erro', 'A imagem deste endereço não abriu. Confira o endereço ou use a busca pelo título.');
+  }
+}
+
+// Enquanto a pessoa digita o endereço, espera uma pausa antes de atualizar a prévia
+function aoDigitarEnderecoDaCapa() {
+  estadoDaCapa.hidden = true;
+  clearTimeout(temporizadorDaPrevia);
+  temporizadorDaPrevia = setTimeout(atualizarPreviaDaCapa, 400);
+}
+
+// Botão "Buscar capa pelo título"
+async function aoBuscarCapa() {
+  const campos = formJogo.elements;
+  const titulo = campos.titulo.value.trim();
+
+  if (titulo.length < 2) {
+    mostrarEstadoDaCapa('erro', 'Preencha o título do jogo antes de buscar a capa.');
+    campos.titulo.focus();
+    return;
+  }
+
+  botaoBuscarCapa.disabled = true;
+  mostrarEstadoDaCapa('carregando', `Buscando a capa de “${titulo}”…`);
+
+  try {
+    const achado = await buscarCapaPorTitulo(titulo);
+
+    if (achado === null || achado.capa === '') {
+      mostrarEstadoDaCapa('vazio', `Não encontramos a capa de “${titulo}”. Confira se o título está completo ou cole o endereço de uma imagem.`);
+      return;
+    }
+
+    campos.capa.value = achado.capa;
+    if (campos.idCheapShark.value === '') {
+      campos.idCheapShark.value = achado.idCheapShark;
+    }
+    atualizarPreviaDaCapa();
+    mostrarErroDoCampo('capa', '');
+    mostrarEstadoDaCapa('ok', 'Capa encontrada. Ela será salva junto com o jogo.');
+  } catch (erro) {
+    console.warn('Falha ao buscar a capa na API CheapShark.', erro);
+    mostrarEstadoDaCapa('erro', 'Não foi possível buscar a capa agora. Verifique sua conexão e tente de novo.');
+  } finally {
+    botaoBuscarCapa.disabled = false;
+  }
 }
 
 
@@ -264,18 +412,17 @@ function usarResultado(resultado) {
   if (campos.plataforma.value === '') {
     campos.plataforma.value = 'pc';       // a CheapShark só acompanha lojas de PC
   }
+  estadoDaCapa.hidden = true;
+  atualizarPreviaDaCapa();
 
-  // Prefere a capa em formato retrato: testa se a imagem existe e, se
-  // carregar, troca o endereço (desde que a pessoa não tenha mexido no campo)
-  if (resultado.capaRetrato !== '') {
-    const teste = new Image();
-    teste.addEventListener('load', () => {
-      if (campos.capa.value === resultado.miniatura) {
-        campos.capa.value = resultado.capaRetrato;
-      }
-    });
-    teste.src = resultado.capaRetrato;
-  }
+  // Troca a miniatura pela melhor capa disponível (a vertical da Steam, quando
+  // existe), desde que a pessoa não tenha mexido no campo enquanto isso
+  escolherCapa(resultado).then((melhor) => {
+    if (melhor !== '' && campos.capa.value === resultado.miniatura) {
+      campos.capa.value = melhor;
+      atualizarPreviaDaCapa();
+    }
+  });
 
   // Se já havia erros na tela, confere de novo os campos que acabaram de mudar
   if (jaTentouSalvar) {
@@ -376,18 +523,29 @@ formJogo.addEventListener('input', aoAlterarCampo);
 formJogo.addEventListener('reset', () => {
   jaTentouSalvar = false;
   limparErros();
-  if (formJogo.elements.idCheapShark) {
-    formJogo.elements.idCheapShark.value = '';   // campos ocultos não são limpos pelo reset
-  }
+  formJogo.elements.idCheapShark.value = '';    // campos ocultos não são limpos pelo reset
+  estadoDaCapa.hidden = true;
+  setTimeout(atualizarPreviaDaCapa);            // depois que os campos forem limpos
 });
+
+// Se a pessoa reescrever o título, o jogo deixa de ser o que veio da API
+formJogo.elements.titulo.addEventListener('input', () => {
+  formJogo.elements.idCheapShark.value = '';
+});
+
+// Capa: prévia ao digitar o endereço e botão de busca pelo título
+marcarFormatoDaCapa(previaDaCapa);
+previaDaCapa.addEventListener('error', aoFalharPrevia);
+formJogo.elements.capa.addEventListener('input', aoDigitarEnderecoDaCapa);
+botaoBuscarCapa.addEventListener('click', aoBuscarCapa);
 
 if (formBuscaApi !== null) {
   formBuscaApi.addEventListener('submit', aoBuscarNaApi);
+}
 
-  // Se a pessoa reescrever o título, o jogo deixa de ser o que veio da API
-  formJogo.elements.titulo.addEventListener('input', () => {
-    formJogo.elements.idCheapShark.value = '';
-  });
+// No cadastro, o navegador pode ter restaurado um endereço de capa digitado antes
+if (!modoEdicao) {
+  atualizarPreviaDaCapa();
 }
 
 if (modoEdicao) {

@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../assets/css/style.css">
   <script defer src="../assets/js/dados.js"></script>
   <script defer src="../assets/js/interface.js"></script>
+  <script defer src="../assets/js/api.js"></script>
   <script defer src="../assets/js/pagina-formulario.js"></script>
 </head>
 <body>
@@ -67,6 +68,9 @@
       <!-- Os campos são preenchidos pelo JavaScript com os dados guardados do jogo.
            novalidate: a validação e as mensagens são feitas pelo JavaScript. -->
       <form id="form-editar-jogo" class="formulario" data-modo="edicao" novalidate>
+        <!-- Código do jogo na API CheapShark (usado para mostrar os preços) -->
+        <input type="hidden" name="idCheapShark">
+
         <fieldset>
           <legend>Identificação</legend>
 
@@ -151,7 +155,17 @@
 
           <div class="campo">
             <label for="editar-capa">URL da capa</label>
-            <input type="url" id="editar-capa" name="capa" placeholder="https://exemplo.com/capa.jpg">
+            <div class="capa-editor">
+              <!-- Prévia atualizada pelo JavaScript conforme o endereço digitado -->
+              <img id="previa-capa" class="capa-previa" src="../assets/img/capa-padrao.svg" alt="Prévia da capa" width="96" height="128">
+              <div class="capa-controles">
+                <input type="url" id="editar-capa" name="capa" placeholder="https://exemplo.com/capa.jpg"
+                       aria-describedby="editar-ajuda-capa">
+                <button type="button" id="botao-buscar-capa" class="botao botao--secundario botao--pequeno">Buscar capa pelo título</button>
+                <p id="estado-capa" class="estado-api" role="status" hidden></p>
+                <small class="ajuda" id="editar-ajuda-capa">Cole o endereço de uma imagem ou use o botão para buscar a capa pelo título.</small>
+              </div>
+            </div>
           </div>
 
           <div class="campo">
