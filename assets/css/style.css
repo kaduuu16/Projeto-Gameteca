@@ -532,6 +532,7 @@ body > header :focus-visible {
   *::after {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
   }
 
   .botao:hover,
@@ -809,6 +810,66 @@ legend {
 
 .resultados-api .botao {
   margin-left: auto;         /* empurra o botão para a direita */
+}
+
+.resultados-api:empty {
+  display: none;
+}
+
+.resultados-api img {
+  flex: none;
+  width: 5.5rem;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background-color: var(--papel);
+  border: 2px solid var(--tinta);
+  border-radius: 0.25rem;
+}
+
+/* Título e preço, um embaixo do outro */
+.resultado-texto {
+  display: grid;
+  flex: 1 1 9rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.resultado-texto span {
+  font-size: 0.9375rem;
+  color: var(--tinta-suave);
+}
+
+/* Situação de uma consulta à API: carregando, resultado, vazio ou erro */
+.estado-api {
+  display: flex;
+  gap: var(--esp-2);
+  align-items: center;
+  max-width: none;
+  margin: 0 0 var(--esp-3);
+  font-weight: 700;
+  color: var(--tinta-suave);
+}
+
+.estado-api[data-estado="erro"] {
+  color: var(--perigo-texto);
+}
+
+/* Indicador girando enquanto a resposta não chega */
+.estado-api[data-estado="carregando"]::before {
+  content: "";
+  flex: none;
+  width: 1rem;
+  height: 1rem;
+  border: 3px solid var(--fundo);
+  border-top-color: var(--violeta);
+  border-radius: 50%;
+  animation: girar 0.8s linear infinite;
+}
+
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 

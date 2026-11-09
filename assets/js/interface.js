@@ -78,6 +78,11 @@ function formatarHoras(horas) {
   return horas === null ? 'Não informado' : `${formatarNumero(horas)} h`;
 }
 
+// A API informa os preços em dólar. Ex.: formatarPreco(14.99) → "US$ 14,99"
+function formatarPreco(valor) {
+  return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'USD' });
+}
+
 
 /* ---- Texto --------------------------------------------------------------- */
 

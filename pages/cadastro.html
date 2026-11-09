@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../assets/css/style.css">
   <script defer src="../assets/js/dados.js"></script>
   <script defer src="../assets/js/interface.js"></script>
+  <script defer src="../assets/js/api.js"></script>
   <script defer src="../assets/js/pagina-formulario.js"></script>
 </head>
 <body>
@@ -41,32 +42,25 @@
     </nav>
 
     <section class="painel painel--api" aria-labelledby="titulo-busca-api">
-      <h2 id="titulo-busca-api">Buscar jogo na RAWG (opcional)</h2>
+      <h2 id="titulo-busca-api">Buscar jogo na internet (opcional)</h2>
       <p>
-        Pesquise pelo nome para preencher automaticamente título, gênero, plataformas,
-        ano e capa. Este recurso será implementado na Etapa 3.
+        Pesquise pelo nome para preencher o título e a capa automaticamente. A busca usa a
+        <a href="https://apidocs.cheapshark.com/" target="_blank" rel="noopener noreferrer">API pública CheapShark</a>,
+        que reúne jogos vendidos em lojas digitais de PC.
       </p>
 
-      <form id="form-busca-api" action="#" method="get" role="search" aria-label="Buscar jogo na API RAWG">
+      <form id="form-busca-api" role="search" aria-label="Buscar jogo na API CheapShark">
         <div class="campo campo--com-botao">
           <label for="busca-api">Nome do jogo</label>
-          <input type="search" id="busca-api" name="busca-api" placeholder="Ex.: Hollow Knight">
-          <button type="submit" class="botao botao--primario">Buscar na RAWG</button>
+          <input type="search" id="busca-api" name="busca-api" placeholder="Ex.: Hollow Knight" autocomplete="off">
+          <button type="submit" class="botao botao--primario">Buscar</button>
         </div>
       </form>
 
-      <h3>Resultados da busca</h3>
-      <p>Exemplo estático de como os resultados serão apresentados:</p>
-      <ul class="resultados-api">
-        <li>
-          <strong>Hollow Knight</strong> (2017) — PC, Nintendo Switch
-          <button type="button" class="botao botao--secundario botao--pequeno">Usar estes dados</button>
-        </li>
-        <li>
-          <strong>Hollow Knight: Silksong</strong> — PC, Nintendo Switch
-          <button type="button" class="botao botao--secundario botao--pequeno">Usar estes dados</button>
-        </li>
-      </ul>
+      <!-- Situação da busca (buscando, erro, quantidade de resultados) e lista
+           de resultados: as duas são preenchidas pelo JavaScript -->
+      <p id="estado-busca-api" class="estado-api" role="status" hidden></p>
+      <ul id="resultados-api" class="resultados-api" aria-label="Resultados da busca"></ul>
     </section>
 
     <section class="painel" aria-labelledby="titulo-form-jogo">
@@ -79,6 +73,9 @@
 
       <!-- novalidate: a validação e as mensagens são feitas pelo JavaScript -->
       <form id="form-jogo" class="formulario" data-modo="cadastro" novalidate>
+        <!-- Preenchido quando o jogo é escolhido na busca da API -->
+        <input type="hidden" name="idCheapShark">
+
 
         <fieldset>
           <legend>Identificação</legend>
@@ -193,8 +190,8 @@
   <footer>
     <p>Minha Gameteca — Trabalho Prático Individual de Desenvolvimento Web (Etapa 3).</p>
     <p>
-      Dados de jogos previstos via
-      <a href="https://rawg.io/apidocs" target="_blank" rel="noopener noreferrer">RAWG Video Games Database API</a>.
+      Busca de jogos e preços pela
+      <a href="https://apidocs.cheapshark.com/" target="_blank" rel="noopener noreferrer">API CheapShark</a>.
     </p>
   </footer>
 </body>

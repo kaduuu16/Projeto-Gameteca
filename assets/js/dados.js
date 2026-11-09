@@ -18,6 +18,7 @@
       horas: 25,               // ou null
       capa: 'https://…',       // endereço da imagem, ou '' para usar a capa provisória
       observacoes: '',
+      idCheapShark: '120',     // código do jogo na API CheapShark, se veio da busca; senão null
       criadoEm: '2026-11-09T12:00:00.000Z',
       atualizadoEm: '2026-11-09T12:00:00.000Z'
     }

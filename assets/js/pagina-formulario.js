@@ -37,7 +37,7 @@ function lerNumeroOpcional(campo) {
 function lerFormulario() {
   const campos = formJogo.elements;
 
-  return {
+  const dados = {
     titulo: campos.titulo.value.trim(),
     plataforma: campos.plataforma.value,
     genero: campos.genero.value,
@@ -48,6 +48,13 @@ function lerFormulario() {
     capa: campos.capa.value.trim(),
     observacoes: campos.observacoes.value.trim(),
   };
+
+  // Só o formulário de cadastro tem este campo oculto (preenchido pela busca na API)
+  if (campos.idCheapShark) {
+    dados.idCheapShark = campos.idCheapShark.value || null;
+  }
+
+  return dados;
 }
 
 
@@ -159,6 +166,11 @@ function aoSalvar(evento) {
   }
   resumoDeErros.hidden = true;
 
+  // Se o título mudou na edição, o vínculo com o jogo da API deixa de valer
+  if (modoEdicao && dados.titulo !== jogoEmEdicao.titulo) {
+    dados.idCheapShark = null;
+  }
+
   const jogo = modoEdicao ? atualizarJogo(jogoEmEdicao.id, dados) : adicionarJogo(dados);
   if (jogo === null) {
     mostrarAviso('erro', modoEdicao
@@ -229,6 +241,130 @@ function iniciarEdicao() {
 }
 
 
+/* ---- Busca na API (só na página de cadastro) ----------------------------- */
+
+const formBuscaApi = document.getElementById('form-busca-api');
+const estadoDaBusca = document.getElementById('estado-busca-api');
+const listaDeResultados = document.getElementById('resultados-api');
+
+// estado: 'carregando', 'ok', 'vazio' ou 'erro' (o CSS muda a aparência)
+function mostrarEstadoDaBusca(estado, texto) {
+  estadoDaBusca.dataset.estado = estado;
+  estadoDaBusca.textContent = texto;
+  estadoDaBusca.hidden = false;
+}
+
+// Copia os dados do resultado escolhido para o formulário do jogo
+function usarResultado(resultado) {
+  const campos = formJogo.elements;
+
+  campos.titulo.value = resultado.titulo;
+  campos.idCheapShark.value = resultado.idCheapShark;
+  campos.capa.value = resultado.miniatura;
+  if (campos.plataforma.value === '') {
+    campos.plataforma.value = 'pc';       // a CheapShark só acompanha lojas de PC
+  }
+
+  // Prefere a capa em formato retrato: testa se a imagem existe e, se
+  // carregar, troca o endereço (desde que a pessoa não tenha mexido no campo)
+  if (resultado.capaRetrato !== '') {
+    const teste = new Image();
+    teste.addEventListener('load', () => {
+      if (campos.capa.value === resultado.miniatura) {
+        campos.capa.value = resultado.capaRetrato;
+      }
+    });
+    teste.src = resultado.capaRetrato;
+  }
+
+  // Se já havia erros na tela, confere de novo os campos que acabaram de mudar
+  if (jaTentouSalvar) {
+    const erros = validarDados(lerFormulario());
+    for (const nome of ['titulo', 'plataforma', 'capa']) {
+      mostrarErroDoCampo(nome, erros[nome]);
+    }
+  }
+
+  mostrarEstadoDaBusca('ok', `Dados de “${resultado.titulo}” copiados para o formulário. Complete o gênero, o ano e o status e salve.`);
+  campos.genero.focus();
+}
+
+// Monta um item da lista de resultados
+function criarResultado(resultado) {
+  const item = document.createElement('li');
+
+  if (resultado.miniatura !== '') {
+    const imagem = document.createElement('img');
+    imagem.alt = '';
+    imagem.loading = 'lazy';
+    imagem.addEventListener('error', () => imagem.remove(), { once: true });
+    imagem.src = resultado.miniatura;
+    item.append(imagem);
+  }
+
+  const texto = document.createElement('span');
+  texto.className = 'resultado-texto';
+
+  const titulo = document.createElement('strong');
+  titulo.textContent = resultado.titulo;
+  texto.append(titulo);
+
+  if (!Number.isNaN(resultado.menorPreco)) {
+    const preco = document.createElement('span');
+    preco.textContent = `a partir de ${formatarPreco(resultado.menorPreco)}`;
+    texto.append(preco);
+  }
+
+  const botao = document.createElement('button');
+  botao.type = 'button';
+  botao.className = 'botao botao--secundario botao--pequeno';
+  botao.textContent = 'Usar este jogo';
+  botao.setAttribute('aria-label', `Usar ${resultado.titulo}`);
+  botao.addEventListener('click', () => usarResultado(resultado));
+
+  item.append(texto, botao);
+  return item;
+}
+
+async function aoBuscarNaApi(evento) {
+  evento.preventDefault();
+
+  const termo = formBuscaApi.elements['busca-api'].value.trim();
+  const botaoBuscar = formBuscaApi.querySelector('button[type="submit"]');
+
+  if (termo.length < 2) {
+    listaDeResultados.replaceChildren();
+    mostrarEstadoDaBusca('erro', 'Digite pelo menos 2 letras do nome do jogo.');
+    return;
+  }
+
+  listaDeResultados.replaceChildren();
+  mostrarEstadoDaBusca('carregando', `Buscando “${termo}”…`);
+  botaoBuscar.disabled = true;            // evita duas buscas ao mesmo tempo
+
+  try {
+    const resultados = await buscarJogosNaApi(termo);
+
+    if (resultados.length === 0) {
+      mostrarEstadoDaBusca('vazio', `Nenhum jogo encontrado para “${termo}”. Confira o nome ou preencha os dados à mão.`);
+      return;
+    }
+
+    for (const resultado of resultados) {
+      listaDeResultados.append(criarResultado(resultado));
+    }
+    mostrarEstadoDaBusca('ok', resultados.length === 1
+      ? `1 resultado para “${termo}”.`
+      : `${resultados.length} resultados para “${termo}”. Escolha um para preencher o formulário.`);
+  } catch (erro) {
+    console.warn('Falha ao consultar a API CheapShark.', erro);
+    mostrarEstadoDaBusca('erro', 'Não foi possível consultar a CheapShark agora. Verifique sua conexão e tente de novo, ou preencha os dados à mão.');
+  } finally {
+    botaoBuscar.disabled = false;
+  }
+}
+
+
 /* ---- Eventos e início ---------------------------------------------------- */
 
 // O limite do ano acompanha a mesma regra usada na validação
@@ -240,7 +376,19 @@ formJogo.addEventListener('input', aoAlterarCampo);
 formJogo.addEventListener('reset', () => {
   jaTentouSalvar = false;
   limparErros();
+  if (formJogo.elements.idCheapShark) {
+    formJogo.elements.idCheapShark.value = '';   // campos ocultos não são limpos pelo reset
+  }
 });
+
+if (formBuscaApi !== null) {
+  formBuscaApi.addEventListener('submit', aoBuscarNaApi);
+
+  // Se a pessoa reescrever o título, o jogo deixa de ser o que veio da API
+  formJogo.elements.titulo.addEventListener('input', () => {
+    formJogo.elements.idCheapShark.value = '';
+  });
+}
 
 if (modoEdicao) {
   iniciarEdicao();
