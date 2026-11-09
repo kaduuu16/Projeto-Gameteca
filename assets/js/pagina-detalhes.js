@@ -78,9 +78,13 @@ function mostrarOfertas(ofertas) {
     textoAtual += ` (${melhor.desconto}% de desconto sobre ${formatarPreco(melhor.precoNormal)})`;
   }
 
-  const textoHistorico = historico === null
-    ? 'Não informado'
-    : `${formatarPreco(historico.preco)} em ${historico.data.toLocaleDateString('pt-BR')}`;
+  let textoHistorico = 'Não informado';
+  if (historico !== null) {
+    textoHistorico = formatarPreco(historico.preco);
+    if (!Number.isNaN(historico.data.getTime())) {
+      textoHistorico += ` em ${historico.data.toLocaleDateString('pt-BR')}`;
+    }
+  }
 
   const lista = document.getElementById('lista-ofertas');
   lista.querySelector('[data-oferta="atual"]').textContent = textoAtual;

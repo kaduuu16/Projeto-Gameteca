@@ -117,7 +117,10 @@ async function buscarOfertasNaApi(idCheapShark) {
 
   let menorPrecoHistorico = null;
   const historico = dados.cheapestPriceEver;
-  if (historico && !Number.isNaN(Number(historico.price))) {
+  const temHistorico = historico
+    && historico.price !== null && historico.price !== undefined
+    && !Number.isNaN(Number(historico.price));
+  if (temHistorico) {
     menorPrecoHistorico = {
       preco: Number(historico.price),
       data: new Date(Number(historico.date) * 1000),           // a API informa em segundos
