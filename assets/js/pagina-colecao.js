@@ -15,13 +15,19 @@ const mensagemSemJogos = document.getElementById('mensagem-sem-jogos');
 const mensagemSemResultados = document.getElementById('mensagem-sem-resultados');
 
 
-/* ---- Pesquisa ------------------------------------------------------------ */
+/* ---- Pesquisa e filtros -------------------------------------------------- */
+
+// Campos do jogo que podem ser filtrados (mesmo nome no formulário e no objeto)
+const CAMPOS_DE_FILTRO = ['plataforma', 'genero', 'status'];
 
 // Lê o que a pessoa escolheu no formulário de busca
 function lerCriterios() {
   const campos = formBusca.elements;
   return {
     termo: normalizarTexto(campos.busca.value),
+    plataforma: campos.plataforma.value,
+    genero: campos.genero.value,
+    status: campos.status.value,
   };
 }
 
@@ -31,6 +37,19 @@ function pesquisarJogos(jogos, termo) {
     return jogos;
   }
   return jogos.filter((jogo) => normalizarTexto(jogo.titulo).includes(termo));
+}
+
+// Mantém só os jogos que combinam com todos os filtros escolhidos.
+// Filtro vazio ("Todas", "Todos") não restringe nada.
+function filtrarJogos(jogos, criterios) {
+  return jogos.filter((jogo) => {
+    for (const campo of CAMPOS_DE_FILTRO) {
+      if (criterios[campo] !== '' && jogo[campo] !== criterios[campo]) {
+        return false;
+      }
+    }
+    return true;
+  });
 }
 
 
@@ -87,7 +106,8 @@ function textoDoContador(visiveis, total) {
 function atualizarLista() {
   const todos = listarJogos();
   const criterios = lerCriterios();
-  const visiveis = pesquisarJogos(todos, criterios.termo);
+  let visiveis = pesquisarJogos(todos, criterios.termo);
+  visiveis = filtrarJogos(visiveis, criterios);
 
   const cartoes = document.createDocumentFragment();
   for (const jogo of visiveis) {
