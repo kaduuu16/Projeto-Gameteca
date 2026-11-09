@@ -64,3 +64,70 @@ async function buscarJogosNaApi(termo) {
   }
   return dados.map(converterResultado);
 }
+
+
+/* ---- Ofertas de um jogo -------------------------------------------------- */
+
+// O link de uma oferta precisa passar pelo redirecionamento da CheapShark.
+// O código da oferta pode vir já codificado para URL; por isso é decodificado
+// antes de ser codificado de novo (assim nunca fica codificado duas vezes).
+function enderecoDaOferta(idDaOferta) {
+  let id = String(idDaOferta);
+  try {
+    id = decodeURIComponent(id);
+  } catch (erro) {
+    // Já estava sem codificação
+  }
+  return `https://www.cheapshark.com/redirect?dealID=${encodeURIComponent(id)}`;
+}
+
+// Busca as ofertas de um jogo pelo código dele na CheapShark.
+// Devolve null se a API não conhecer o jogo. Formato do resultado:
+//   {
+//     titulo: 'Hollow Knight',
+//     quantidadeDeOfertas: 5,
+//     melhorOferta: { preco, precoNormal, desconto, link } ou null,
+//     menorPrecoHistorico: { preco, data } ou null
+//   }
+async function buscarOfertasNaApi(idCheapShark) {
+  const dados = await consultarApi(`/games?id=${encodeURIComponent(idCheapShark)}`);
+
+  if (dados === null || typeof dados !== 'object' || !dados.info) {
+    return null;
+  }
+
+  const ofertas = Array.isArray(dados.deals) ? dados.deals : [];
+
+  // Percorre as ofertas guardando a de menor preço
+  let melhorOferta = null;
+  for (const oferta of ofertas) {
+    const preco = Number(oferta.price);
+    if (Number.isNaN(preco)) {
+      continue;
+    }
+    if (melhorOferta === null || preco < melhorOferta.preco) {
+      melhorOferta = {
+        preco: preco,
+        precoNormal: Number(oferta.retailPrice),
+        desconto: Math.round(Number(oferta.savings)) || 0,     // em %
+        link: enderecoDaOferta(oferta.dealID),
+      };
+    }
+  }
+
+  let menorPrecoHistorico = null;
+  const historico = dados.cheapestPriceEver;
+  if (historico && !Number.isNaN(Number(historico.price))) {
+    menorPrecoHistorico = {
+      preco: Number(historico.price),
+      data: new Date(Number(historico.date) * 1000),           // a API informa em segundos
+    };
+  }
+
+  return {
+    titulo: String(dados.info.title || ''),
+    quantidadeDeOfertas: ofertas.length,
+    melhorOferta: melhorOferta,
+    menorPrecoHistorico: menorPrecoHistorico,
+  };
+}

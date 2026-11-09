@@ -59,6 +59,75 @@ function mostrarJogo(jogo) {
   fichaDoJogo.hidden = false;
 }
 
+/* ---- Preços (API CheapShark) --------------------------------------------- */
+
+const estadoDasOfertas = document.getElementById('estado-ofertas');
+
+// estado: 'carregando', 'ok', 'vazio' ou 'erro' (o CSS muda a aparência)
+function mostrarEstadoDasOfertas(estado, texto) {
+  estadoDasOfertas.dataset.estado = estado;
+  estadoDasOfertas.textContent = texto;
+}
+
+function mostrarOfertas(ofertas) {
+  const melhor = ofertas.melhorOferta;
+  const historico = ofertas.menorPrecoHistorico;
+
+  let textoAtual = formatarPreco(melhor.preco);
+  if (melhor.desconto > 0 && !Number.isNaN(melhor.precoNormal)) {
+    textoAtual += ` (${melhor.desconto}% de desconto sobre ${formatarPreco(melhor.precoNormal)})`;
+  }
+
+  const textoHistorico = historico === null
+    ? 'Não informado'
+    : `${formatarPreco(historico.preco)} em ${historico.data.toLocaleDateString('pt-BR')}`;
+
+  const lista = document.getElementById('lista-ofertas');
+  lista.querySelector('[data-oferta="atual"]').textContent = textoAtual;
+  lista.querySelector('[data-oferta="historico"]').textContent = textoHistorico;
+  lista.hidden = false;
+
+  document.getElementById('link-oferta').href = melhor.link;
+  document.getElementById('acoes-oferta').hidden = false;
+
+  mostrarEstadoDasOfertas('ok', ofertas.quantidadeDeOfertas === 1
+    ? `1 oferta encontrada para “${ofertas.titulo}”.`
+    : `${ofertas.quantidadeDeOfertas} ofertas encontradas para “${ofertas.titulo}”.`);
+}
+
+// Descobre o código do jogo na CheapShark. Jogos cadastrados pela busca já
+// têm o código guardado; para os digitados à mão, procura um título igual.
+async function descobrirIdNaApi(jogo) {
+  if (jogo.idCheapShark) {
+    return jogo.idCheapShark;
+  }
+
+  const resultados = await buscarJogosNaApi(jogo.titulo);
+  const procurado = normalizarTexto(jogo.titulo);
+  const igual = resultados.find((resultado) => normalizarTexto(resultado.titulo) === procurado);
+
+  return igual === undefined ? null : igual.idCheapShark;
+}
+
+async function carregarOfertas(jogo) {
+  try {
+    const id = await descobrirIdNaApi(jogo);
+    const ofertas = id === null ? null : await buscarOfertasNaApi(id);
+
+    if (ofertas === null || ofertas.melhorOferta === null) {
+      mostrarEstadoDasOfertas('vazio', 'Não encontramos este título nas lojas de PC acompanhadas pela CheapShark.');
+      return;
+    }
+    mostrarOfertas(ofertas);
+  } catch (erro) {
+    console.warn('Falha ao consultar a API CheapShark.', erro);
+    mostrarEstadoDasOfertas('erro', 'Não foi possível consultar os preços agora. Verifique sua conexão e recarregue a página.');
+  }
+}
+
+
+/* ---- Exclusão ------------------------------------------------------------ */
+
 // Excluir pede confirmação; depois de excluir, volta para a coleção
 function aoClicarEmExcluir() {
   pedirConfirmacaoDeExclusao(jogoAtual, () => {
@@ -86,4 +155,13 @@ if (jogoAtual === null) {
 } else {
   mostrarJogo(jogoAtual);
   document.getElementById('botao-excluir').addEventListener('click', aoClicarEmExcluir);
+  carregarOfertas(jogoAtual);
 }
+
+// Se o navegador reabrir uma cópia guardada desta página (botão "voltar"),
+// recarrega para mostrar os dados atuais
+window.addEventListener('pageshow', (evento) => {
+  if (evento.persisted) {
+    location.reload();
+  }
+});

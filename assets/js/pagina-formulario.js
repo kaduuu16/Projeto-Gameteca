@@ -392,4 +392,12 @@ if (formBuscaApi !== null) {
 
 if (modoEdicao) {
   iniciarEdicao();
+
+  // Se o navegador reabrir uma cópia guardada desta página (botão "voltar"),
+  // recarrega para mostrar os dados atuais do jogo
+  window.addEventListener('pageshow', (evento) => {
+    if (evento.persisted) {
+      location.reload();
+    }
+  });
 }

@@ -1385,6 +1385,17 @@ legend {
   padding-left: 1.25rem;
 }
 
+/* Bloco de preços vindos da API */
+.bloco-api dl {
+  margin-bottom: var(--esp-3);
+}
+
+.bloco-api .ajuda {
+  max-width: none;
+  margin: var(--esp-3) 0 0;
+  font-size: 0.875rem;
+}
+
 /* "Voltar" fica à esquerda; editar e excluir, à direita */
 .detalhe .acoes .botao--fantasma {
   margin-right: auto;

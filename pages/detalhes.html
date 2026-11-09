@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../assets/css/style.css">
   <script defer src="../assets/js/dados.js"></script>
   <script defer src="../assets/js/interface.js"></script>
+  <script defer src="../assets/js/api.js"></script>
   <script defer src="../assets/js/pagina-detalhes.js"></script>
 </head>
 <body>
@@ -93,6 +94,25 @@
       <section class="bloco-observacoes" aria-labelledby="detalhe-observacoes">
         <h3 id="detalhe-observacoes">Observações</h3>
         <p data-campo="observacoes"></p>
+      </section>
+
+      <!-- Preços consultados na API CheapShark ao abrir a página -->
+      <section class="bloco-api" aria-labelledby="detalhe-api">
+        <h3 id="detalhe-api">Preços em lojas de PC</h3>
+        <p id="estado-ofertas" class="estado-api" role="status" data-estado="carregando">Consultando preços na CheapShark…</p>
+        <dl id="lista-ofertas" hidden>
+          <dt>Menor preço agora</dt>
+          <dd data-oferta="atual"></dd>
+          <dt>Menor preço já registrado</dt>
+          <dd data-oferta="historico"></dd>
+        </dl>
+        <p id="acoes-oferta" class="acoes" hidden>
+          <a id="link-oferta" class="botao botao--secundario botao--pequeno" target="_blank" rel="noopener noreferrer">Ver oferta na loja</a>
+        </p>
+        <p class="ajuda">
+          Preços em dólar, informados pela
+          <a href="https://www.cheapshark.com/" target="_blank" rel="noopener noreferrer">CheapShark</a>.
+        </p>
       </section>
 
       <footer>
