@@ -284,6 +284,30 @@ function adicionarJogo(dados) {
   return salvarJogos(jogos) ? jogo : null;
 }
 
+/* ---- Edição -------------------------------------------------------------- */
+
+// Troca os dados de um jogo existente e grava. Devolve o jogo atualizado,
+// ou null se o jogo não existe mais ou se não foi possível gravar.
+function atualizarJogo(id, dados) {
+  const jogos = listarJogos();
+  const posicao = jogos.findIndex((jogo) => jogo.id === id);
+
+  if (posicao === -1) {
+    return null;
+  }
+
+  // Mantém o que não muda (id e data de criação) e registra a data da alteração
+  const atualizado = {
+    ...jogos[posicao],
+    ...dados,
+    id: id,
+    atualizadoEm: new Date().toISOString(),
+  };
+
+  jogos[posicao] = atualizado;
+  return salvarJogos(jogos) ? atualizado : null;
+}
+
 /* ---- Resumo -------------------------------------------------------------- */
 
 // Calcula os números do "Resumo da coleção" a partir de uma lista de jogos

@@ -1,6 +1,7 @@
 /*
   Minha Gameteca — pagina-formulario.js
   Formulário do jogo: lê os campos, valida, mostra os erros e salva.
+  O mesmo arquivo atende a página de cadastro e a de edição.
 */
 
 'use strict';
@@ -9,6 +10,10 @@
 
 const formJogo = document.querySelector('.formulario');
 const resumoDeErros = document.getElementById('resumo-erros');
+
+// O HTML informa o modo: <form data-modo="cadastro"> ou <form data-modo="edicao">
+const modoEdicao = formJogo.dataset.modo === 'edicao';
+let jogoEmEdicao = null;      // preenchido ao abrir a página de edição
 
 // Campos validados, na ordem em que aparecem na tela
 const CAMPOS_DO_JOGO = ['titulo', 'plataforma', 'genero', 'ano', 'status', 'nota', 'horas', 'capa', 'observacoes'];
@@ -43,6 +48,13 @@ function lerFormulario() {
     capa: campos.capa.value.trim(),
     observacoes: campos.observacoes.value.trim(),
   };
+}
+
+
+// Na edição, o próprio jogo não conta como "repetido"
+function validarDados(dados) {
+  const idIgnorado = jogoEmEdicao === null ? undefined : jogoEmEdicao.id;
+  return validarJogo(dados, idIgnorado);
 }
 
 
@@ -130,7 +142,7 @@ function aoSalvar(evento) {
   jaTentouSalvar = true;
 
   const dados = lerFormulario();
-  const erros = validarJogo(dados);
+  const erros = validarDados(dados);
   const camposComErro = CAMPOS_DO_JOGO.filter((nome) => erros[nome]);
 
   for (const nome of CAMPOS_DO_JOGO) {
@@ -147,15 +159,22 @@ function aoSalvar(evento) {
   }
   resumoDeErros.hidden = true;
 
-  const jogo = adicionarJogo(dados);
+  const jogo = modoEdicao ? atualizarJogo(jogoEmEdicao.id, dados) : adicionarJogo(dados);
   if (jogo === null) {
-    mostrarAviso('erro', 'Não foi possível guardar o jogo neste navegador. Verifique se o armazenamento de dados do site está liberado.');
+    mostrarAviso('erro', modoEdicao
+      ? 'Não foi possível salvar. O jogo pode ter sido excluído em outra aba, ou o navegador bloqueou o armazenamento de dados.'
+      : 'Não foi possível guardar o jogo neste navegador. Verifique se o armazenamento de dados do site está liberado.');
     return;
   }
 
-  // O aviso de sucesso aparece na página da coleção, depois do redirecionamento
-  guardarAvisoParaProximaPagina('sucesso', `“${jogo.titulo}” foi adicionado à coleção.`);
-  location.href = `${RAIZ}index.html`;
+  // O aviso de sucesso aparece na próxima página, depois do redirecionamento
+  if (modoEdicao) {
+    guardarAvisoParaProximaPagina('sucesso', `As alterações em “${jogo.titulo}” foram salvas.`);
+    location.href = urlDaPagina('detalhes', jogo.id);
+  } else {
+    guardarAvisoParaProximaPagina('sucesso', `“${jogo.titulo}” foi adicionado à coleção.`);
+    location.href = `${RAIZ}index.html`;
+  }
 }
 
 // Depois da primeira tentativa, confere de novo o campo que acabou de mudar
@@ -165,7 +184,7 @@ function aoAlterarCampo(evento) {
     return;
   }
 
-  const erros = validarJogo(lerFormulario());
+  const erros = validarDados(lerFormulario());
   mostrarErroDoCampo(nome, erros[nome]);
 
   // Título e plataforma são conferidos juntos (jogo repetido na mesma plataforma)
@@ -175,6 +194,38 @@ function aoAlterarCampo(evento) {
   if (Object.keys(erros).length === 0) {
     resumoDeErros.hidden = true;
   }
+}
+
+
+/* ---- Edição -------------------------------------------------------------- */
+
+// Copia os dados do jogo para os campos do formulário
+function preencherFormulario(jogo) {
+  for (const nome of CAMPOS_DO_JOGO) {
+    const valor = jogo[nome];
+    // No caso do status, atribuir o valor marca o botão de rádio correspondente
+    formJogo.elements[nome].value = valor === null || valor === undefined ? '' : valor;
+  }
+}
+
+// Abre a página de edição com o jogo indicado no endereço (…/editar.html?id=3)
+function iniciarEdicao() {
+  jogoEmEdicao = buscarJogoPorId(idDaUrl());
+
+  if (jogoEmEdicao === null) {
+    document.getElementById('painel-formulario').hidden = true;
+    document.getElementById('nao-encontrado').hidden = false;
+    document.title = 'Jogo não encontrado — Minha Gameteca';
+    return;
+  }
+
+  preencherFormulario(jogoEmEdicao);
+
+  const enderecoDosDetalhes = urlDaPagina('detalhes', jogoEmEdicao.id);
+  document.getElementById('titulo-atual').textContent = jogoEmEdicao.titulo;
+  document.getElementById('trilha-detalhes').href = enderecoDosDetalhes;
+  document.getElementById('link-cancelar').href = enderecoDosDetalhes;
+  document.title = `Editar ${jogoEmEdicao.titulo} — Minha Gameteca`;
 }
 
 
@@ -190,3 +241,7 @@ formJogo.addEventListener('reset', () => {
   jaTentouSalvar = false;
   limparErros();
 });
+
+if (modoEdicao) {
+  iniciarEdicao();
+}

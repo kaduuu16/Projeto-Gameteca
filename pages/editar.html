@@ -10,6 +10,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&amp;family=Bricolage+Grotesque:opsz,wght@12..96,600..800&amp;display=swap">
   <link rel="stylesheet" href="../assets/css/style.css">
+  <script defer src="../assets/js/dados.js"></script>
+  <script defer src="../assets/js/interface.js"></script>
+  <script defer src="../assets/js/pagina-formulario.js"></script>
 </head>
 <body>
   <a class="pular-link" href="#conteudo">Ir para o conteúdo principal</a>
@@ -33,36 +36,50 @@
     <nav class="trilha" aria-label="Trilha de navegação">
       <ol>
         <li><a href="../index.html">Minha coleção</a></li>
-        <li><a href="detalhes.html">Detalhes do jogo</a></li>
+        <li><a id="trilha-detalhes" href="../index.html">Detalhes do jogo</a></li>
         <li aria-current="page">Editar jogo</li>
       </ol>
     </nav>
 
-    <section class="painel" aria-labelledby="titulo-editar">
+    <noscript>
+      <p class="mensagem mensagem--erro">Para editar jogos é preciso ativar o JavaScript no navegador.</p>
+    </noscript>
+
+    <!-- Mostrado pelo JavaScript quando o endereço não tem um id válido ou o jogo foi excluído -->
+    <section id="nao-encontrado" class="painel" aria-labelledby="titulo-nao-encontrado" hidden>
+      <h2 id="titulo-nao-encontrado">Jogo não encontrado</h2>
+      <p>
+        Não há o que editar: este jogo não está na coleção. Ele pode ter sido
+        excluído, ou o endereço da página está incompleto.
+      </p>
+      <p class="acoes">
+        <a class="botao botao--primario" href="../index.html">Voltar para a coleção</a>
+      </p>
+    </section>
+
+    <section id="painel-formulario" class="painel" aria-labelledby="titulo-editar">
       <h2 id="titulo-editar">Editar jogo</h2>
       <p class="nota-obrigatorio">
-        Formulário já preenchido com os dados de exemplo de
-        <strong>The Witcher 3: Wild Hunt</strong>. Na Etapa 3, ele será carregado
-        a partir do jogo selecionado.
+        Alterando <strong id="titulo-atual">o jogo</strong>.
+        Os campos marcados com <abbr title="obrigatório">*</abbr> são obrigatórios.
       </p>
 
-      <form id="form-editar-jogo" class="formulario" action="#" method="post">
-        <input type="hidden" id="editar-id" name="id" value="1">
-
+      <!-- Os campos são preenchidos pelo JavaScript com os dados guardados do jogo.
+           novalidate: a validação e as mensagens são feitas pelo JavaScript. -->
+      <form id="form-editar-jogo" class="formulario" data-modo="edicao" novalidate>
         <fieldset>
           <legend>Identificação</legend>
 
           <div class="campo">
             <label for="editar-titulo">Título <abbr title="obrigatório">*</abbr></label>
-            <input type="text" id="editar-titulo" name="titulo" maxlength="120" required
-                   value="The Witcher 3: Wild Hunt">
+            <input type="text" id="editar-titulo" name="titulo" maxlength="120" required>
           </div>
 
           <div class="campo">
             <label for="editar-plataforma">Plataforma <abbr title="obrigatório">*</abbr></label>
             <select id="editar-plataforma" name="plataforma" required>
-              <option value="" disabled>Selecione</option>
-              <option value="pc" selected>PC</option>
+              <option value="" selected disabled>Selecione</option>
+              <option value="pc">PC</option>
               <option value="playstation-5">PlayStation 5</option>
               <option value="playstation-4">PlayStation 4</option>
               <option value="xbox-series">Xbox Series X|S</option>
@@ -74,10 +91,10 @@
           <div class="campo">
             <label for="editar-genero">Gênero <abbr title="obrigatório">*</abbr></label>
             <select id="editar-genero" name="genero" required>
-              <option value="" disabled>Selecione</option>
+              <option value="" selected disabled>Selecione</option>
               <option value="acao">Ação</option>
               <option value="aventura">Aventura</option>
-              <option value="rpg" selected>RPG</option>
+              <option value="rpg">RPG</option>
               <option value="plataforma">Plataforma</option>
               <option value="estrategia">Estratégia</option>
               <option value="esporte">Esporte</option>
@@ -89,8 +106,7 @@
 
           <div class="campo">
             <label for="editar-ano">Ano de lançamento <abbr title="obrigatório">*</abbr></label>
-            <input type="number" id="editar-ano" name="ano" min="1970" max="2100" step="1" required
-                   value="2015">
+            <input type="number" id="editar-ano" name="ano" min="1970" max="2100" step="1" required>
           </div>
         </fieldset>
 
@@ -108,7 +124,7 @@
               <label for="editar-status-jogando">Jogando</label>
             </div>
             <div class="opcao">
-              <input type="radio" id="editar-status-zerado" name="status" value="zerado" checked>
+              <input type="radio" id="editar-status-zerado" name="status" value="zerado">
               <label for="editar-status-zerado">Zerado</label>
             </div>
             <div class="opcao">
@@ -120,13 +136,13 @@
           <div class="campo">
             <label for="editar-nota">Nota pessoal</label>
             <input type="number" id="editar-nota" name="nota" min="0" max="10" step="0.5"
-                   aria-describedby="editar-ajuda-nota" value="10">
+                   aria-describedby="editar-ajuda-nota" placeholder="0 a 10">
             <small class="ajuda" id="editar-ajuda-nota">De 0 a 10. Deixe em branco se ainda não jogou.</small>
           </div>
 
           <div class="campo">
             <label for="editar-horas">Horas jogadas</label>
-            <input type="number" id="editar-horas" name="horas" min="0" step="0.5" value="120">
+            <input type="number" id="editar-horas" name="horas" min="0" step="0.5" placeholder="Ex.: 35">
           </div>
         </fieldset>
 
@@ -140,22 +156,26 @@
 
           <div class="campo">
             <label for="editar-observacoes">Observações</label>
-            <textarea id="editar-observacoes" name="observacoes" rows="4" maxlength="500">Joguei todas as missões principais e as duas expansões. Quero rejogar com outro final.</textarea>
+            <textarea id="editar-observacoes" name="observacoes" rows="4" maxlength="500"
+                      placeholder="Anotações pessoais sobre o jogo"></textarea>
           </div>
         </fieldset>
 
-        <p class="mensagem mensagem--erro" role="alert">Há campos com problema. Corrija os destacados em vermelho antes de salvar.</p>
+        <p id="resumo-erros" class="mensagem mensagem--erro" role="alert" hidden></p>
 
         <div class="acoes">
           <button type="submit" class="botao botao--primario">Salvar alterações</button>
-          <a class="botao botao--fantasma" href="detalhes.html">Cancelar</a>
+          <a class="botao botao--fantasma" id="link-cancelar" href="../index.html">Cancelar</a>
         </div>
       </form>
     </section>
   </main>
 
+  <!-- Área dos avisos de feedback, preenchida pelo JavaScript -->
+  <div id="avisos" class="avisos" aria-live="polite"></div>
+
   <footer>
-    <p>Minha Gameteca — Trabalho Prático Individual de Desenvolvimento Web (Etapa 2).</p>
+    <p>Minha Gameteca — Trabalho Prático Individual de Desenvolvimento Web (Etapa 3).</p>
     <p>
       Dados de jogos previstos via
       <a href="https://rawg.io/apidocs" target="_blank" rel="noopener noreferrer">RAWG Video Games Database API</a>.
